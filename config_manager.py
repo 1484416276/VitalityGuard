@@ -4,6 +4,8 @@ import logging
 
 CONFIG_FILE = "config.json"
 
+_RUNTIME_CURRENT_MODE = None
+
 DEFAULT_CONFIG = {
     "language": "zh_CN",
     "current_mode": "default",
@@ -11,17 +13,6 @@ DEFAULT_CONFIG = {
     "modes": {
         "default": {
             "name": "默认模式",
-            "work_duration_minutes": 40,
-            "rest_duration_minutes": 10,
-            "allow_interruption": False,
-            "night_sleep_enabled": True,
-            "night_sleep_start": "22:30",
-            "night_sleep_end": "07:00",
-            "countdown_seconds": 5,
-            "allow_esc_unlock": False
-        },
-        "meeting": {
-            "name": "会议模式",
             "work_duration_minutes": 60,
             "rest_duration_minutes": 5,
             "allow_interruption": True,
@@ -30,6 +21,17 @@ DEFAULT_CONFIG = {
             "night_sleep_end": "06:00",
             "countdown_seconds": 10,
             "allow_esc_unlock": True
+        },
+        "work": {
+            "name": "工作模式",
+            "work_duration_minutes": 40,
+            "rest_duration_minutes": 10,
+            "allow_interruption": False,
+            "night_sleep_enabled": True,
+            "night_sleep_start": "22:30",
+            "night_sleep_end": "07:00",
+            "countdown_seconds": 5,
+            "allow_esc_unlock": False
         },
         "movie": {
             "name": "观影模式",
@@ -44,6 +46,13 @@ DEFAULT_CONFIG = {
         }
     }
 }
+
+def set_runtime_current_mode(mode_name):
+    global _RUNTIME_CURRENT_MODE
+    _RUNTIME_CURRENT_MODE = mode_name
+
+def get_runtime_current_mode():
+    return _RUNTIME_CURRENT_MODE
 
 class ConfigManager:
     def __init__(self):
@@ -62,6 +71,28 @@ class ConfigManager:
                     if k not in config:
                         config[k] = v
                         changed = True
+                modes = config.get("modes", {})
+                if isinstance(modes, dict):
+                    if "meeting" in modes and "default" in modes:
+                        if "work" not in modes:
+                            modes["work"] = modes.get("default")
+                            changed = True
+                        modes["default"] = modes.get("meeting")
+                        del modes["meeting"]
+                        changed = True
+                        if config.get("current_mode") == "meeting":
+                            config["current_mode"] = "default"
+                            changed = True
+                        elif config.get("current_mode") == "default":
+                            config["current_mode"] = "work"
+                            changed = True
+                    elif "meeting" in modes and "default" not in modes:
+                        modes["default"] = modes.get("meeting")
+                        del modes["meeting"]
+                        changed = True
+                        if config.get("current_mode") == "meeting":
+                            config["current_mode"] = "default"
+                            changed = True
                 if changed:
                     self.save_config(config)
                 return config
@@ -84,7 +115,7 @@ class ConfigManager:
             logging.error(f"Failed to save config: {e}")
 
     def get_current_mode_config(self):
-        mode_name = self.config.get("current_mode", "default")
+        mode_name = _RUNTIME_CURRENT_MODE or self.config.get("current_mode", "default")
         return self.config["modes"].get(mode_name, DEFAULT_CONFIG["modes"]["default"])
 
     def set_current_mode(self, mode_name):

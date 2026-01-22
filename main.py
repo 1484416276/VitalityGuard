@@ -3,7 +3,7 @@ import sys
 import logging
 import socket
 from locker import ScreenLockerApp
-from config_manager import ConfigManager
+from config_manager import ConfigManager, set_runtime_current_mode
 from utils.system_ops import set_windows_startup
 
 def is_already_running():
@@ -43,6 +43,7 @@ def main():
         set_windows_startup(bool(config.get("auto_start", False)))
     except Exception as e:
         logging.warning(f"Failed to apply Windows startup setting: {e}")
+    set_runtime_current_mode("default")
 
     parser = argparse.ArgumentParser(description="VitalityGuard - Prevent Sudden Death Assistant")
     parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual shutdown)")

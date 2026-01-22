@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config_manager import ConfigManager
+from config_manager import ConfigManager, get_runtime_current_mode, set_runtime_current_mode
 import tkinter.messagebox
 from i18n import i18n
 from utils.system_ops import set_windows_startup
@@ -56,7 +56,8 @@ class SettingsGUI:
         self.label_mode = ctk.CTkLabel(self.mode_frame, text=i18n.get("current_mode"))
         self.label_mode.pack(side="left", padx=10)
 
-        self.mode_var = ctk.StringVar(value=self.config.get("current_mode", "default"))
+        initial_mode = get_runtime_current_mode() or self.config.get("current_mode", "default")
+        self.mode_var = ctk.StringVar(value=initial_mode)
         modes = list(self.config["modes"].keys())
         self.option_mode = ctk.CTkOptionMenu(self.mode_frame, values=modes, variable=self.mode_var, command=self.load_mode_settings)
         self.option_mode.pack(side="left", padx=10)
@@ -268,6 +269,7 @@ class SettingsGUI:
         # Update global config
         self.config["current_mode"] = mode_name
         self.config_manager.save_config(self.config)
+        set_runtime_current_mode(None)
         
         if show_message:
             tkinter.messagebox.showinfo("Success", "配置已保存")
