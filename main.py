@@ -2,6 +2,7 @@ import argparse
 import sys
 import logging
 import socket
+import ctypes
 from locker import ScreenLockerApp
 from config_manager import ConfigManager, set_runtime_current_mode
 from utils.system_ops import set_windows_startup
@@ -27,9 +28,11 @@ def main():
     # 1. Single Instance Check
     lock_socket = is_already_running()
     if not lock_socket:
+        try:
+            ctypes.windll.user32.MessageBoxW(None, "VitalityGuard 已在运行（托盘）。", "VitalityGuard", 0x40)
+        except Exception:
+            pass
         print("VitalityGuard is already running! Exiting...")
-        # Optional: Bring existing window to front? Hard without UI handle.
-        # Just exit for now.
         sys.exit(0)
     
     # 配置日志

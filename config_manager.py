@@ -71,36 +71,9 @@ class ConfigManager:
                     if k not in config:
                         config[k] = v
                         changed = True
-                modes = config.get("modes", {})
-                if isinstance(modes, dict):
-                    if "work" in modes and "health" not in modes:
-                        modes["health"] = modes.get("work")
-                        del modes["work"]
-                        changed = True
-                        if config.get("current_mode") == "work":
-                            config["current_mode"] = "health"
-                            changed = True
-
-                    if "meeting" in modes and "default" in modes:
-                        if "health" not in modes:
-                            modes["health"] = modes.get("default")
-                            changed = True
-                        modes["default"] = modes.get("meeting")
-                        del modes["meeting"]
-                        changed = True
-                        if config.get("current_mode") == "meeting":
-                            config["current_mode"] = "default"
-                            changed = True
-                        elif config.get("current_mode") == "default":
-                            config["current_mode"] = "health"
-                            changed = True
-                    elif "meeting" in modes and "default" not in modes:
-                        modes["default"] = modes.get("meeting")
-                        del modes["meeting"]
-                        changed = True
-                        if config.get("current_mode") == "meeting":
-                            config["current_mode"] = "default"
-                            changed = True
+                if not isinstance(config.get("modes"), dict):
+                    config["modes"] = DEFAULT_CONFIG["modes"]
+                    changed = True
                 if changed:
                     self.save_config(config)
                 return config
