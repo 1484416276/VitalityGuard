@@ -1,0 +1,5 @@
+pyautogui
+schedule
+pystray
+Pillow
+customtkinter
