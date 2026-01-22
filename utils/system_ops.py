@@ -5,6 +5,73 @@ import pyautogui
 import logging
 import ctypes
 import subprocess
+import sys
+
+try:
+    import winreg
+except Exception:
+    winreg = None
+
+_RUN_KEY_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
+_APP_RUN_NAME = "VitalityGuard"
+
+def _build_startup_command():
+    exe_path = sys.executable
+    lower = exe_path.lower()
+    if lower.endswith("\\python.exe"):
+        pythonw = exe_path[:-9] + "pythonw.exe"
+        if os.path.exists(pythonw):
+            exe_path = pythonw
+
+    lower = exe_path.lower()
+    if lower.endswith("\\python.exe") or lower.endswith("\\pythonw.exe"):
+        script_path = os.path.abspath(sys.argv[0])
+        return f"\"{exe_path}\" \"{script_path}\""
+
+    return f"\"{exe_path}\""
+
+def set_windows_startup(enabled: bool):
+    if winreg is None:
+        raise RuntimeError("Windows startup is only supported on Windows.")
+
+    if enabled:
+        cmd = _build_startup_command()
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, _RUN_KEY_PATH, 0, winreg.KEY_SET_VALUE)
+        try:
+            winreg.SetValueEx(key, _APP_RUN_NAME, 0, winreg.REG_SZ, cmd)
+        finally:
+            winreg.CloseKey(key)
+        return
+
+    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, _RUN_KEY_PATH, 0, winreg.KEY_SET_VALUE)
+    try:
+        try:
+            winreg.DeleteValue(key, _APP_RUN_NAME)
+        except FileNotFoundError:
+            pass
+        except OSError:
+            pass
+    finally:
+        winreg.CloseKey(key)
+
+def is_windows_startup_enabled():
+    if winreg is None:
+        return False
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, _RUN_KEY_PATH, 0, winreg.KEY_READ)
+    except OSError:
+        return False
+    try:
+        value, reg_type = winreg.QueryValueEx(key, _APP_RUN_NAME)
+        if reg_type != winreg.REG_SZ:
+            return False
+        return bool(value)
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return False
+    finally:
+        winreg.CloseKey(key)
 
 def save_current_work():
     """

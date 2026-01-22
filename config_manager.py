@@ -7,6 +7,7 @@ CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
     "language": "zh_CN",
     "current_mode": "default",
+    "auto_start": False,
     "modes": {
         "default": {
             "name": "默认模式",
@@ -55,7 +56,15 @@ class ConfigManager:
         
         try:
             with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                config = json.load(f)
+                changed = False
+                for k, v in DEFAULT_CONFIG.items():
+                    if k not in config:
+                        config[k] = v
+                        changed = True
+                if changed:
+                    self.save_config(config)
+                return config
         except Exception as e:
             logging.error(f"Failed to load config: {e}")
             return DEFAULT_CONFIG

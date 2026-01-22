@@ -2,6 +2,7 @@ import customtkinter as ctk
 from config_manager import ConfigManager
 import tkinter.messagebox
 from i18n import i18n
+from utils.system_ops import set_windows_startup
 
 class SettingsGUI:
     def __init__(self, root_callback=None, quit_callback=None):
@@ -66,6 +67,14 @@ class SettingsGUI:
 
         self.btn_del_mode = ctk.CTkButton(self.mode_frame, text="-", width=30, fg_color="red", command=self.delete_current_mode)
         self.btn_del_mode.pack(side="left", padx=5)
+
+        # Global Options
+        self.global_frame = ctk.CTkFrame(self.root)
+        self.global_frame.pack(pady=5, padx=20, fill="x")
+
+        self.var_auto_start = ctk.BooleanVar(value=bool(self.config.get("auto_start", False)))
+        self.chk_auto_start = ctk.CTkCheckBox(self.global_frame, text=i18n.get("auto_start"), variable=self.var_auto_start)
+        self.chk_auto_start.pack(pady=5, anchor="w", padx=10)
 
         # Settings Container
         self.settings_frame = ctk.CTkFrame(self.root)
@@ -245,6 +254,16 @@ class SettingsGUI:
         except ValueError:
             tkinter.messagebox.showerror("Error", "Invalid numeric input")
             return False
+
+        desired_auto_start = self.var_auto_start.get()
+        current_auto_start = bool(self.config.get("auto_start", False))
+        if desired_auto_start != current_auto_start:
+            try:
+                set_windows_startup(desired_auto_start)
+                self.config["auto_start"] = desired_auto_start
+            except Exception as e:
+                tkinter.messagebox.showerror("Error", i18n.get("auto_start_failed", error=str(e)))
+                self.var_auto_start.set(current_auto_start)
 
         # Update global config
         self.config["current_mode"] = mode_name
