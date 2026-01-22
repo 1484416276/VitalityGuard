@@ -1,8 +1,10 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 import sys
 import threading
 import time
 import random
+import logging
 from scheduler_logic import SchedulerLogic
 from utils.system_ops import save_current_work, force_hibernate
 from utils.sound_player import SoundPlayer
@@ -33,13 +35,36 @@ class ScreenLockerApp:
         # System Tray
         self.tray = SystemTrayIcon(on_quit=self.quit_app, on_show=self.show_settings)
         self.check_loop_id = None # Track the after loop ID
+        self.root.protocol("WM_DELETE_WINDOW", self._on_root_close)
 
     def start(self):
         """启动应用 (显示设置界面)"""
         print("Starting GUI...")
-        # Start tray in background thread
-        self.tray.start_in_thread()
+        try:
+            self.tray.start_in_thread()
+        except Exception as e:
+            logging.exception("Failed to start tray thread")
+        self.root.after(1200, self._verify_tray_ready)
         self.gui.run()
+
+    def _verify_tray_ready(self):
+        if self.tray.last_error:
+            try:
+                messagebox.showwarning("VitalityGuard", f"托盘启动失败：{self.tray.last_error}\n窗口将保持可见。")
+            except Exception:
+                pass
+            return
+        if self.tray.icon is None:
+            self.root.after(1200, self._verify_tray_ready)
+
+    def _on_root_close(self):
+        if self.tray.icon is None or self.tray.last_error:
+            try:
+                self.root.iconify()
+            except Exception:
+                pass
+            return
+        self.root.withdraw()
 
     def start_service(self):
         """用户点击开始后，隐藏界面并启动后台服务"""

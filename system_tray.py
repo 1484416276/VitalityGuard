@@ -5,6 +5,7 @@ import sys
 import os
 import tkinter as tk
 from i18n import i18n
+import logging
 
 class SystemTrayIcon:
     def __init__(self, app_name="VitalityGuard", on_quit=None, on_show=None):
@@ -13,6 +14,7 @@ class SystemTrayIcon:
         self.on_show = on_show
         self.icon = None
         self.thread = None
+        self.last_error = None
 
     def create_image(self):
         # Create a simple icon image programmatically
@@ -45,14 +47,18 @@ class SystemTrayIcon:
             self.on_quit()
 
     def run(self):
-        image = self.create_image()
-        self.icon = pystray.Icon(
-            "name",
-            image,
-            i18n.get("tray_tooltip"),
-            menu=self.setup_menu()
-        )
-        self.icon.run()
+        try:
+            image = self.create_image()
+            self.icon = pystray.Icon(
+                self.app_name,
+                image,
+                i18n.get("tray_tooltip"),
+                menu=self.setup_menu()
+            )
+            self.icon.run()
+        except Exception as e:
+            self.last_error = str(e)
+            logging.exception("System tray failed to start")
 
     def start_in_thread(self):
         self.thread = threading.Thread(target=self.run, daemon=True)

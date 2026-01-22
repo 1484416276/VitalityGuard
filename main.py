@@ -1,46 +1,60 @@
 import argparse
 import sys
 import logging
-import socket
 import ctypes
+import os
 from locker import ScreenLockerApp
 from config_manager import ConfigManager, set_runtime_current_mode
 from utils.system_ops import set_windows_startup
 
-def is_already_running():
-    """
-    检查是否已有实例在运行
-    使用绑定本地端口的方法来实现单实例锁
-    """
+_SINGLE_INSTANCE_MUTEX = None
+
+def _acquire_single_instance_lock():
+    global _SINGLE_INSTANCE_MUTEX
     try:
-        # Create a socket and bind to a specific port
-        # If binding fails, another instance is running
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(('127.0.0.1', 12345)) # Port 12345 for VitalityGuard lock
-        return s # Keep socket open
-    except socket.error:
-        return None
+        handle = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\VitalityGuard")
+        if not handle:
+            return True
+        _SINGLE_INSTANCE_MUTEX = handle
+        return ctypes.windll.kernel32.GetLastError() != 183
+    except Exception:
+        return True
+
+def _get_log_file_path():
+    base = os.getenv("APPDATA") or os.getcwd()
+    log_dir = os.path.join(base, "VitalityGuard", "logs")
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+    except Exception:
+        log_dir = os.getcwd()
+    return os.path.join(log_dir, "vitalityguard.log")
+
+def _show_message_box(text, title="VitalityGuard"):
+    try:
+        ctypes.windll.user32.MessageBoxW(None, text, title, 0x40)
+    except Exception:
+        pass
 
 def main():
     """
     程序入口
     """
     # 1. Single Instance Check
-    lock_socket = is_already_running()
-    if not lock_socket:
-        try:
-            ctypes.windll.user32.MessageBoxW(None, "VitalityGuard 已在运行（托盘）。", "VitalityGuard", 0x40)
-        except Exception:
-            pass
-        print("VitalityGuard is already running! Exiting...")
+    if not _acquire_single_instance_lock():
+        _show_message_box("VitalityGuard 已在运行（可能在托盘或后台）。")
         sys.exit(0)
     
     # 配置日志
-    logging.basicConfig(
-        level=logging.INFO,
-        format='[%(levelname)s] %(message)s',
-        stream=sys.stdout
-    )
+    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s', handlers=[
+        logging.FileHandler(_get_log_file_path(), encoding="utf-8"),
+        logging.StreamHandler(sys.stdout)
+    ])
+
+    def _excepthook(exc_type, exc, tb):
+        logging.exception("Unhandled exception", exc_info=(exc_type, exc, tb))
+        _show_message_box(f"程序异常退出：{exc}\n\n日志：{_get_log_file_path()}", "VitalityGuard")
+
+    sys.excepthook = _excepthook
     try:
         config = ConfigManager().config
         set_windows_startup(bool(config.get("auto_start", False)))
