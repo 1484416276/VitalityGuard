@@ -37,7 +37,7 @@ class WakeTimer:
         try:
             # 创建 WaitableTimer
             # CreateWaitableTimerW(lpTimerAttributes, bManualReset, lpTimerName)
-            self.handle = self.kernel32.CreateWaitableTimerW(None, True, "PowerZilvWakeTimer")
+            self.handle = self.kernel32.CreateWaitableTimerW(None, True, "VitalityGuardWakeTimer")
             
             if not self.handle:
                 logging.error(f"Failed to create waitable timer. Error code: {self.kernel32.GetLastError()}")
