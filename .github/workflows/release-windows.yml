@@ -1,0 +1,66 @@
+name: release-windows
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Build onefile exe
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name VitalityGuard main.py
+
+      - name: Prepare artifacts
+        id: prep
+        shell: pwsh
+        run: |
+          $tag = "${env:GITHUB_REF_NAME}"
+          if (-not $tag) { $tag = "dev" }
+          $outName = "VitalityGuard-$tag-windows-x64.exe"
+          $src = "dist\VitalityGuard.exe"
+          $dstRel = "dist\$outName"
+          Copy-Item -Force $src $dstRel
+          $hash = (Get-FileHash -Algorithm SHA256 $dstRel).Hash.ToLower()
+          "asset_path=$dstRel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "asset_name=$outName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "sha256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prep.outputs.asset_name }}
+          path: ${{ steps.prep.outputs.asset_path }}
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.prep.outputs.asset_path }}
+          name: VitalityGuard ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body: |
+            Windows x64 onefile build.
+
+            SHA256: ${{ steps.prep.outputs.sha256 }}
