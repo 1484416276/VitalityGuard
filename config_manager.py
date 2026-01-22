@@ -22,8 +22,8 @@ DEFAULT_CONFIG = {
             "countdown_seconds": 10,
             "allow_esc_unlock": True
         },
-        "work": {
-            "name": "工作模式",
+        "health": {
+            "name": "健康模式",
             "work_duration_minutes": 40,
             "rest_duration_minutes": 10,
             "allow_interruption": False,
@@ -73,9 +73,17 @@ class ConfigManager:
                         changed = True
                 modes = config.get("modes", {})
                 if isinstance(modes, dict):
+                    if "work" in modes and "health" not in modes:
+                        modes["health"] = modes.get("work")
+                        del modes["work"]
+                        changed = True
+                        if config.get("current_mode") == "work":
+                            config["current_mode"] = "health"
+                            changed = True
+
                     if "meeting" in modes and "default" in modes:
-                        if "work" not in modes:
-                            modes["work"] = modes.get("default")
+                        if "health" not in modes:
+                            modes["health"] = modes.get("default")
                             changed = True
                         modes["default"] = modes.get("meeting")
                         del modes["meeting"]
@@ -84,7 +92,7 @@ class ConfigManager:
                             config["current_mode"] = "default"
                             changed = True
                         elif config.get("current_mode") == "default":
-                            config["current_mode"] = "work"
+                            config["current_mode"] = "health"
                             changed = True
                     elif "meeting" in modes and "default" not in modes:
                         modes["default"] = modes.get("meeting")
