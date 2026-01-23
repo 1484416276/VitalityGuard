@@ -4,7 +4,11 @@
 
 > **"Hearing recent news about sudden deaths from overwork has been heartbreaking. I spent a few days creating this tool, hoping it helps everyone stay healthy."**
 
-**VitalityGuard** is a desktop health and control tool designed for Windows, aiming to help users manage work/rest cycles and enforce rest during specific times (e.g., night rest).
+**VitalityGuard** is a simple yet powerful anti-overwork tool designed for Windows.
+
+**Simple & Effective**: No complex setup. Just **one single configuration page** to manage your health.
+
+It helps you enforce work/rest cycles and mandatory night rest to prevent health risks caused by prolonged computer use.
 
 ### Recent Updates
 

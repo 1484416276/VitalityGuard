@@ -4,7 +4,11 @@
 
 > **„Berichte über plötzliche Todesfälle durch Überarbeitung sind erschütternd. Ich habe ein paar Tage investiert, um dieses Tool zu bauen – in der Hoffnung, dass es hilft.“**
 
-**VitalityGuard** ist ein Windows-Desktop-Tool zur Gesundheits- und Nutzungssteuerung. Es verwaltet Arbeits-/Pausenzyklen und kann Ruhezeiten (z. B. nachts) erzwingen.
+**VitalityGuard** ist ein einfaches, aber leistungsstarkes Anti-Überlastungs-Tool für Windows.
+
+**Einfach & Effektiv**: Keine komplexe Einrichtung. Nur **eine einzige Konfigurationsseite**, um Ihre Gesundheit zu verwalten.
+
+Es hilft Ihnen, Arbeits-/Pausenzyklen und obligatorische Nachtruhe durchzusetzen, um Gesundheitsrisiken durch längere Computernutzung zu vermeiden.
 
 ### Funktionen
 

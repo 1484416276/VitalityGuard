@@ -4,7 +4,11 @@
 
 > **« Las noticias de muertes súbitas por exceso de trabajo son desgarradoras. Pasé unos días creando esta herramienta con la esperanza de que ayude. »**
 
-**VitalityGuard** es una herramienta de salud/control para Windows. Gestiona ciclos de trabajo/descanso y puede imponer descanso en horarios específicos (por ejemplo, descanso nocturno).
+**VitalityGuard** es una herramienta anti-sobrecarga simple pero potente diseñada para Windows.
+
+**Simple y Efectiva**: Sin configuraciones complejas. Solo **una única página de configuración** para gestionar tu salud.
+
+Te ayuda a imponer ciclos de trabajo/descanso y descanso nocturno obligatorio para prevenir riesgos de salud causados por el uso prolongado del ordenador.
 
 ### Funciones
 

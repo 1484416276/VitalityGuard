@@ -4,7 +4,11 @@
 
 > **« Les décès soudains liés au surmenage sont bouleversants. J’ai passé quelques jours à créer cet outil, en espérant qu’il puisse aider. »**
 
-**VitalityGuard** est un outil de santé/contrôle pour Windows, conçu pour gérer des cycles travail/repos et imposer un repos à des horaires définis (ex. repos nocturne).
+**VitalityGuard** est un outil anti-surmenage simple mais puissant conçu pour Windows.
+
+**Simple et Efficace** : Pas de configuration complexe. Juste **une seule page de configuration** pour gérer votre santé.
+
+Il vous aide à imposer des cycles de travail/repos et un repos nocturne obligatoire pour prévenir les risques pour la santé liés à une utilisation prolongée de l'ordinateur.
 
 ### Fonctionnalités
 
