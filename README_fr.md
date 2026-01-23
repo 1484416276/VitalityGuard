@@ -1,0 +1,113 @@
+# VitalityGuard - Assistant Anti-Surcharge
+
+[English](README.md) | [中文](README_zh.md) | [日本語](README_ja.md) | [Deutsch](README_de.md) | [Español](README_es.md) | [한국어](README_ko.md) | [Русский](README_ru.md)
+
+> **« Les décès soudains liés au surmenage sont bouleversants. J’ai passé quelques jours à créer cet outil, en espérant qu’il puisse aider. »**
+
+**VitalityGuard** est un outil de santé/contrôle pour Windows, conçu pour gérer des cycles travail/repos et imposer un repos à des horaires définis (ex. repos nocturne).
+
+### Fonctionnalités
+
+- **Cycles travail/repos** : réglage de la durée de travail et de l’écran noir (en minutes).
+- **Écran noir forcé / mise en veille prolongée** :
+  - Affiche un écran noir pendant la pause.
+  - Option de mise en veille prolongée pour un contrôle plus strict.
+- **Repos nocturne** :
+  - Période de repos obligatoire (ex. 22:30 - 07:00).
+  - **Mise en veille prolongée forcée** : si activé pendant la période, l’ordinateur est immédiatement mis en veille prolongée.
+- **Interface moderne** : basée sur `customtkinter`.
+- **Internationalisation** : 8 langues (EN/ZH/JA/FR/DE/ES/KO/RU).
+- **Sécurité** :
+  - **Déverrouillage optionnel pendant l’écran noir** : bouton + `ESC` x5 (configurable).
+
+### Installation
+
+1. Vérifiez que Python 3.8+ est installé.
+2. Installez les dépendances :
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Utilisation
+
+1. Lancez l’application :
+   ```bash
+   python main.py
+   ```
+2. Modifiez les paramètres dans la fenêtre.
+3. Cliquez sur « Save & Restart Assistant ». L’appli se cache et reste dans la zone de notification.
+4. Clic droit sur l’icône pour rouvrir les paramètres ou quitter.
+
+---
+
+## Tutoriel illustré (Windows)
+
+Cette section s’applique à l’exécution via EXE et via `python main.py`.
+
+Captures : [docs/images](docs/images/) (Français : `docs/images/fr_FR/`).
+
+### 1) Premier lancement
+
+1. Lancez `VitalityGuard.exe`.
+2. La fenêtre de paramètres s’ouvre (sinon, vérifiez la zone de notification).
+
+![Fenêtre des paramètres](docs/images/fr_FR/01-settings-home.png)
+
+### 2) Régler les durées (valeurs recommandées)
+
+- Durée de travail (minutes)
+- Durée de l’écran noir (minutes)
+- Compte à rebours (secondes, 0 = désactivé)
+
+Recommandé :
+
+- Travail 45 min
+- Écran noir 5 min
+- Compte à rebours 5 s
+
+![Durées](docs/images/fr_FR/02-mode-and-durations.png)
+
+### 3) Déverrouillage pendant l’écran noir (activé par défaut)
+
+Option : autoriser le déverrouillage (bouton et `ESC` x5).
+
+![Déverrouillage](docs/images/fr_FR/03-black-screen-unlock.png)
+
+### 4) Enregistrer et exécuter en arrière-plan
+
+Après l’enregistrement, l’icône apparaît dans la zone de notification.
+
+![Icône](docs/images/tray.png)
+
+![Menu](docs/images/fr_FR/04-tray-menu.png)
+
+### 5) Repos nocturne (optionnel)
+
+![Repos nocturne](docs/images/fr_FR/05-night-rest.png)
+
+### 6) Fichier de configuration
+
+Chemin : `%APPDATA%\\VitalityGuard\\config.json`
+
+![config.json](docs/images/fr_FR/06-config-json.png)
+
+---
+
+## FAQ
+
+### L’EXE se ferme immédiatement / aucune fenêtre
+
+Lancez `VitalityGuardDebug.exe` pour voir les erreurs, ou vérifiez :
+
+- `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
+
+### Icône introuvable
+
+Windows peut la placer sous `^` (icônes masquées).
+
+### Contact
+
+Ajoutez-moi sur WeChat :
+
+![WeChat QR](微信二维码.jpg)
+

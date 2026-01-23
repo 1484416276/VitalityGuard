@@ -2,7 +2,12 @@ import json
 import os
 import logging
 
-CONFIG_FILE = "config.json"
+def get_config_dir():
+    base = os.getenv("APPDATA") or os.path.expanduser("~")
+    return os.path.join(base, "VitalityGuard")
+
+def get_config_file_path():
+    return os.path.join(get_config_dir(), "config.json")
 
 _RUNTIME_CURRENT_MODE = None
 
@@ -13,36 +18,13 @@ DEFAULT_CONFIG = {
     "modes": {
         "default": {
             "name": "默认模式",
-            "work_duration_minutes": 60,
+            "work_duration_minutes": 45,
             "rest_duration_minutes": 5,
-            "allow_interruption": True,
-            "night_sleep_enabled": False,
-            "night_sleep_start": "23:00",
-            "night_sleep_end": "06:00",
-            "countdown_seconds": 10,
-            "allow_esc_unlock": True
-        },
-        "health": {
-            "name": "健康模式",
-            "work_duration_minutes": 40,
-            "rest_duration_minutes": 10,
-            "allow_interruption": False,
+            "allow_black_screen_unlock": True,
             "night_sleep_enabled": True,
             "night_sleep_start": "22:30",
             "night_sleep_end": "07:00",
-            "countdown_seconds": 5,
-            "allow_esc_unlock": False
-        },
-        "movie": {
-            "name": "观影模式",
-            "work_duration_minutes": 120,
-            "rest_duration_minutes": 15,
-            "allow_interruption": True,
-            "night_sleep_enabled": True,
-            "night_sleep_start": "00:00",
-            "night_sleep_end": "08:00",
-            "countdown_seconds": 0,
-            "allow_esc_unlock": True
+            "countdown_seconds": 5
         }
     }
 }
@@ -59,12 +41,18 @@ class ConfigManager:
         self.config = self.load_config()
 
     def load_config(self):
-        if not os.path.exists(CONFIG_FILE):
+        config_path = get_config_file_path()
+        try:
+            os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        except Exception:
+            pass
+
+        if not os.path.exists(config_path):
             self.save_config(DEFAULT_CONFIG)
             return DEFAULT_CONFIG
         
         try:
-            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+            with open(config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
                 changed = False
                 for k, v in DEFAULT_CONFIG.items():
@@ -72,7 +60,18 @@ class ConfigManager:
                         config[k] = v
                         changed = True
                 if not isinstance(config.get("modes"), dict):
-                    config["modes"] = DEFAULT_CONFIG["modes"]
+                    config["modes"] = {}
+                    changed = True
+                else:
+                    if set(config["modes"].keys()) != {"default"}:
+                        changed = True
+                default_mode = config["modes"].get("default", {})
+                merged_default_mode = DEFAULT_CONFIG["modes"]["default"].copy()
+                if isinstance(default_mode, dict):
+                    merged_default_mode.update(default_mode)
+                config["modes"] = {"default": merged_default_mode}
+                if config.get("current_mode") != "default":
+                    config["current_mode"] = "default"
                     changed = True
                 if changed:
                     self.save_config(config)
@@ -90,7 +89,12 @@ class ConfigManager:
             self.config = config
         
         try:
-            with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+            config_path = get_config_file_path()
+            try:
+                os.makedirs(os.path.dirname(config_path), exist_ok=True)
+            except Exception:
+                pass
+            with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=4, ensure_ascii=False)
         except Exception as e:
             logging.error(f"Failed to save config: {e}")
@@ -100,39 +104,21 @@ class ConfigManager:
         return self.config["modes"].get(mode_name, DEFAULT_CONFIG["modes"]["default"])
 
     def set_current_mode(self, mode_name):
-        if mode_name in self.config["modes"]:
-            self.config["current_mode"] = mode_name
-            self.save_config()
-            return True
-        return False
+        self.config["current_mode"] = "default"
+        self.save_config()
+        return True
 
     def update_mode(self, mode_key, new_settings):
-        if mode_key in self.config["modes"]:
-            self.config["modes"][mode_key].update(new_settings)
+        if mode_key != "default":
+            return False
+        if "default" in self.config.get("modes", {}) and isinstance(new_settings, dict):
+            self.config["modes"]["default"].update(new_settings)
             self.save_config()
             return True
         return False
 
     def add_mode(self, mode_key, settings):
-        if mode_key in self.config["modes"]:
-            return False # Already exists
-        
-        self.config["modes"][mode_key] = settings
-        self.save_config()
-        return True
+        return False
 
     def delete_mode(self, mode_key):
-        if mode_key in self.config["modes"]:
-            # Prevent deleting the last mode or default if possible, but let's just basic check
-            if len(self.config["modes"]) <= 1:
-                return False
-            
-            del self.config["modes"][mode_key]
-            
-            # If we deleted the current mode, switch to default or first available
-            if self.config["current_mode"] == mode_key:
-                self.config["current_mode"] = list(self.config["modes"].keys())[0]
-                
-            self.save_config()
-            return True
         return False

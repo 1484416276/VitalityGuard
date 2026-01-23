@@ -112,13 +112,12 @@ class ScreenLockerApp:
         """执行强制黑屏锁定 (替代休眠)"""
         config = self.config_manager.get_current_mode_config()
         countdown_sec = config.get("countdown_seconds", 5)
-        allow_interruption = config.get("allow_interruption", False)
-        allow_esc_unlock = config.get("allow_esc_unlock", False)
+        allow_unlock = bool(config.get("allow_black_screen_unlock", True))
 
         # 1. 倒计时
         if countdown_sec > 0:
             # 显示全屏倒计时
-            proceed = CountdownWindow(self.root, countdown_sec, allow_cancel=allow_interruption).show()
+            proceed = CountdownWindow(self.root, countdown_sec, allow_cancel=allow_unlock).show()
             if not proceed:
                 print("Lock cancelled by user.")
                 # 重置调度器到工作状态
@@ -145,9 +144,9 @@ class ScreenLockerApp:
              print(f"[DRY RUN] Would show black screen for {lock_duration}s")
         else:
              # 3. 启动黑屏遮罩
-             self._show_black_screen(lock_duration, allow_interruption, allow_esc_unlock)
+             self._show_black_screen(lock_duration, allow_unlock)
 
-    def _show_black_screen(self, duration, allow_interruption, allow_esc_unlock=False):
+    def _show_black_screen(self, duration, allow_unlock):
         """显示全屏黑色遮罩"""
         # Create a new Toplevel window for black screen
         self.overlay_window = tk.Toplevel(self.root)
@@ -167,7 +166,7 @@ class ScreenLockerApp:
         # Safety Unlock: Press ESC 5 times
         self.esc_press_count = 0
         def on_esc(event):
-            if not allow_esc_unlock:
+            if not allow_unlock:
                 return
 
             self.esc_press_count += 1
@@ -198,7 +197,7 @@ class ScreenLockerApp:
         
         # Hint label (Subtle but visible)
         # Changed color to #808080 for better visibility
-        if allow_esc_unlock:
+        if allow_unlock:
             hint_label = tk.Label(self.overlay_window, text=i18n.get("press_esc_hint"), font=("Microsoft YaHei", 12), fg="#808080", bg="black")
             hint_label.pack(side="bottom", pady=20)
             
@@ -207,7 +206,7 @@ class ScreenLockerApp:
             self.esc_feedback_label.pack(side="bottom", pady=5)
 
         # Cancel button if allowed
-        if allow_interruption:
+        if allow_unlock:
             btn_exit = tk.Button(self.overlay_window, text=i18n.get("emergency_unlock"), font=("Microsoft YaHei", 12), command=self._close_black_screen)
             btn_exit.pack(side="bottom", pady=20)
 

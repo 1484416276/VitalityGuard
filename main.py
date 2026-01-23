@@ -3,7 +3,6 @@ import sys
 import logging
 import ctypes
 import os
-from locker import ScreenLockerApp
 from config_manager import ConfigManager, set_runtime_current_mode
 from utils.system_ops import set_windows_startup
 
@@ -29,6 +28,22 @@ def _get_log_file_path():
         log_dir = os.getcwd()
     return os.path.join(log_dir, "vitalityguard.log")
 
+def _configure_tk_for_frozen():
+    if not getattr(sys, "frozen", False):
+        return
+    meipass = getattr(sys, "_MEIPASS", None)
+    if not meipass:
+        return
+    tcl_dir = os.path.join(meipass, "_tcl_data")
+    tk_dir = os.path.join(meipass, "_tk_data")
+    os.environ["TCL_LIBRARY"] = tcl_dir
+    os.environ["TK_LIBRARY"] = tk_dir
+    os.environ["PATH"] = meipass + os.pathsep + os.environ.get("PATH", "")
+    try:
+        os.add_dll_directory(meipass)
+    except Exception:
+        pass
+
 def _show_message_box(text, title="VitalityGuard"):
     try:
         ctypes.windll.user32.MessageBoxW(None, text, title, 0x40)
@@ -39,6 +54,8 @@ def main():
     """
     程序入口
     """
+    _configure_tk_for_frozen()
+
     # 1. Single Instance Check
     if not _acquire_single_instance_lock():
         _show_message_box("VitalityGuard 已在运行（可能在托盘或后台）。")
@@ -77,6 +94,7 @@ def main():
     if args.mock_curfew:
         print("WARNING: MOCK NIGHT REST ENABLED")
 
+    from locker import ScreenLockerApp
     app = ScreenLockerApp(test_mode=args.test_mode, dry_run=args.dry_run, mock_curfew=args.mock_curfew)
     try:
         app.start()

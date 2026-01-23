@@ -6,4 +6,5 @@ config.json
 build/
 dist/
 *.spec
+!VitalityGuard*.spec
 .local/
