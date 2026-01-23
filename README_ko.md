@@ -10,6 +10,34 @@
 
 작업/휴식 사이클과 필수 야간 휴식을 강제하여 장시간 컴퓨터 사용으로 인한 건강 위험을 예방합니다.
 
+## 그림 튜토리얼 (Windows)
+
+EXE 실행 및 `python main.py` 모두에 적용됩니다.
+
+스크린샷: [docs/images](docs/images/) (한국어: `docs/images/ko_KR/`).
+
+### 1) 첫 실행 및 설정
+
+1. `VitalityGuard.exe` 실행. 설정 창이 열립니다(안 열리면 트레이를 확인).
+2. **시간 설정** (권장):
+   - 작업 60분 / 검은 화면 5분 / 카운트다운 10초
+3. **야간 휴식** (선택):
+   - 켜면(기본 22:30 - 07:00) 시스템이 강제로 최대절전 모드에 진입합니다. 낮에 먼저 테스트해보세요!
+
+![설정](docs/images/ko_KR/01-settings-home.png)
+
+### 2) 검은 화면 중 해제(기본: 켬)
+
+옵션: 해제 허용(버튼 + `ESC` 5회).
+
+![해제](docs/images/ko_KR/03-black-screen-unlock.png)
+
+### 3) 저장 후 트레이에서 실행
+
+저장 후 트레이 아이콘이 나타납니다.
+
+![트레이 아이콘](docs/images/tray.png)
+
 ### 기능
 
 - **작업/휴식 사이클**: 작업 시간과 검은 화면 시간(분) 설정.
@@ -45,40 +73,6 @@ Windows EXE 다운로드:
 2. 설정 창에서 값을 조정합니다.
 3. “Save & Restart Assistant”를 누르면 창이 숨겨지고 트레이에서 실행됩니다.
 4. 트레이 아이콘을 우클릭하여 설정을 열거나 종료합니다.
-
----
-
-## 그림 튜토리얼 (Windows)
-
-EXE 실행 및 `python main.py` 모두에 적용됩니다.
-
-스크린샷: [docs/images](docs/images/) (한국어: `docs/images/ko_KR/`).
-
-### 1) 첫 실행 및 설정
-
-1. `VitalityGuard.exe` 실행. 설정 창이 열립니다(안 열리면 트레이를 확인).
-2. **시간 설정** (권장):
-   - 작업 60분 / 검은 화면 5분 / 카운트다운 10초
-3. **야간 휴식** (선택):
-   - 켜면(기본 22:30 - 07:00) 시스템이 강제로 최대절전 모드에 진입합니다. 낮에 먼저 테스트해보세요!
-
-![설정](docs/images/ko_KR/01-settings-home.png)
-
-### 2) 검은 화면 중 해제(기본: 켬)
-
-옵션: 해제 허용(버튼 + `ESC` 5회).
-
-![해제](docs/images/ko_KR/03-black-screen-unlock.png)
-
-### 3) 저장 후 트레이에서 실행
-
-저장 후 트레이 아이콘이 나타납니다.
-
-![트레이 아이콘](docs/images/tray.png)
-
-![트레이 메뉴](docs/images/ko_KR/04-tray-menu.png)
-
-### 4) 설정 파일
 
 경로: `%APPDATA%\\VitalityGuard\\config.json`
 

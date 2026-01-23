@@ -10,6 +10,34 @@
 
 Es hilft Ihnen, Arbeits-/Pausenzyklen und obligatorische Nachtruhe durchzusetzen, um Gesundheitsrisiken durch längere Computernutzung zu vermeiden.
 
+## Illustrierte Anleitung (Windows)
+
+Gilt für EXE und `python main.py`.
+
+Screenshots: [docs/images](docs/images/) (Deutsch: `docs/images/de_DE/`).
+
+### 1) Erster Start und Einstellungen
+
+1. `VitalityGuard.exe` starten. Einstellungsfenster öffnet sich (sonst Tray prüfen).
+2. **Zeiten einstellen** (Empfohlen):
+   - Arbeit 60 min / Schwarzer Bildschirm 5 min / Countdown 10 s
+3. **Nachtruhe** (Optional):
+   - Wenn aktiviert (Standard 22:30 - 07:00), wird das System in den Ruhezustand versetzt. Bitte tagsüber testen!
+
+![Einstellungen](docs/images/de_DE/01-settings-home.png)
+
+### 2) Entsperren während schwarzem Bildschirm (Standard: an)
+
+Option: Entsperren erlauben (Button und `ESC` 5x).
+
+![Entsperren](docs/images/de_DE/03-black-screen-unlock.png)
+
+### 3) Speichern und im Tray ausführen
+
+Nach dem Speichern erscheint das Tray-Icon.
+
+![Tray-Icon](docs/images/tray.png)
+
 ### Funktionen
 
 - **Arbeits-/Pausenzyklen**: Arbeitszeit und Schwarzer-Bildschirm-Zeit (Minuten) einstellbar.
@@ -45,40 +73,6 @@ Windows-EXE herunterladen:
 2. Einstellungen anpassen.
 3. „Save & Restart Assistant“ klicken. Die App läuft im Hintergrund (Tray).
 4. Tray-Icon rechtsklicken: Einstellungen öffnen oder beenden.
-
----
-
-## Illustrierte Anleitung (Windows)
-
-Gilt für EXE und `python main.py`.
-
-Screenshots: [docs/images](docs/images/) (Deutsch: `docs/images/de_DE/`).
-
-### 1) Erster Start und Einstellungen
-
-1. `VitalityGuard.exe` starten. Einstellungsfenster öffnet sich (sonst Tray prüfen).
-2. **Zeiten einstellen** (Empfohlen):
-   - Arbeit 60 min / Schwarzer Bildschirm 5 min / Countdown 10 s
-3. **Nachtruhe** (Optional):
-   - Wenn aktiviert (Standard 22:30 - 07:00), wird das System in den Ruhezustand versetzt. Bitte tagsüber testen!
-
-![Einstellungen](docs/images/de_DE/01-settings-home.png)
-
-### 2) Entsperren während schwarzem Bildschirm (Standard: an)
-
-Option: Entsperren erlauben (Button und `ESC` 5x).
-
-![Entsperren](docs/images/de_DE/03-black-screen-unlock.png)
-
-### 3) Speichern und im Tray ausführen
-
-Nach dem Speichern erscheint das Tray-Icon.
-
-![Tray-Icon](docs/images/tray.png)
-
-![Tray-Menü](docs/images/de_DE/04-tray-menu.png)
-
-### 4) Konfigurationsdatei
 
 Pfad: `%APPDATA%\\VitalityGuard\\config.json`
 

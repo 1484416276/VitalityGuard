@@ -10,6 +10,34 @@
 
 Il vous aide à imposer des cycles de travail/repos et un repos nocturne obligatoire pour prévenir les risques pour la santé liés à une utilisation prolongée de l'ordinateur.
 
+## Tutoriel illustré (Windows)
+
+Cette section s’applique à l’exécution via EXE et via `python main.py`.
+
+Captures : [docs/images](docs/images/) (Français : `docs/images/fr_FR/`).
+
+### 1) Premier lancement et configuration
+
+1. Lancez `VitalityGuard.exe`. La fenêtre s’ouvre (sinon, vérifiez la zone de notification).
+2. **Régler les durées** (recommandé) :
+   - Travail 60 min / Écran noir 5 min / Compte à rebours 10 s
+3. **Repos nocturne** (optionnel) :
+   - Activez l'hibernation forcée la nuit (par défaut 22:30 - 07:00). Testez d'abord en journée !
+
+![Fenêtre des paramètres](docs/images/fr_FR/01-settings-home.png)
+
+### 2) Déverrouillage pendant l’écran noir (activé par défaut)
+
+Option : autoriser le déverrouillage (bouton et `ESC` x5).
+
+![Déverrouillage](docs/images/fr_FR/03-black-screen-unlock.png)
+
+### 3) Enregistrer et exécuter en arrière-plan
+
+Après l’enregistrement, l’icône apparaît dans la zone de notification.
+
+![Icône](docs/images/tray.png)
+
 ### Fonctionnalités
 
 - **Cycles travail/repos** : réglage de la durée de travail et de l’écran noir (en minutes).
@@ -45,40 +73,6 @@ Téléchargement de l’EXE Windows :
 2. Modifiez les paramètres dans la fenêtre.
 3. Cliquez sur « Save & Restart Assistant ». L’appli se cache et reste dans la zone de notification.
 4. Clic droit sur l’icône pour rouvrir les paramètres ou quitter.
-
----
-
-## Tutoriel illustré (Windows)
-
-Cette section s’applique à l’exécution via EXE et via `python main.py`.
-
-Captures : [docs/images](docs/images/) (Français : `docs/images/fr_FR/`).
-
-### 1) Premier lancement et configuration
-
-1. Lancez `VitalityGuard.exe`. La fenêtre s’ouvre (sinon, vérifiez la zone de notification).
-2. **Régler les durées** (recommandé) :
-   - Travail 60 min / Écran noir 5 min / Compte à rebours 10 s
-3. **Repos nocturne** (optionnel) :
-   - Activez l'hibernation forcée la nuit (par défaut 22:30 - 07:00). Testez d'abord en journée !
-
-![Fenêtre des paramètres](docs/images/fr_FR/01-settings-home.png)
-
-### 2) Déverrouillage pendant l’écran noir (activé par défaut)
-
-Option : autoriser le déverrouillage (bouton et `ESC` x5).
-
-![Déverrouillage](docs/images/fr_FR/03-black-screen-unlock.png)
-
-### 3) Enregistrer et exécuter en arrière-plan
-
-Après l’enregistrement, l’icône apparaît dans la zone de notification.
-
-![Icône](docs/images/tray.png)
-
-![Menu](docs/images/fr_FR/04-tray-menu.png)
-
-### 4) Fichier de configuration
 
 Chemin : `%APPDATA%\\VitalityGuard\\config.json`
 

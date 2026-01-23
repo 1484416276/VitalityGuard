@@ -10,6 +10,34 @@
 
 Te ayuda a imponer ciclos de trabajo/descanso y descanso nocturno obligatorio para prevenir riesgos de salud causados por el uso prolongado del ordenador.
 
+## Tutorial ilustrado (Windows)
+
+Aplica para EXE y para `python main.py`.
+
+Capturas: [docs/images](docs/images/) (Español: `docs/images/es_ES/`).
+
+### 1) Primer inicio y configuración
+
+1. Ejecuta `VitalityGuard.exe`. Se abre la ventana de ajustes (si no, revisa la bandeja).
+2. **Ajustar duraciones** (Recomendado):
+   - Trabajo 60 min / Pantalla negra 5 min / Cuenta atrás 10 s
+3. **Descanso nocturno** (Opcional):
+   - Si está activado (por defecto 22:30 - 07:00), el sistema forzará la hibernación. ¡Prueba primero durante el día!
+
+![Ajustes](docs/images/es_ES/01-settings-home.png)
+
+### 2) Desbloquear durante pantalla negra (activado por defecto)
+
+Opción: permitir desbloqueo (botón y `ESC` x5).
+
+![Desbloqueo](docs/images/es_ES/03-black-screen-unlock.png)
+
+### 3) Guardar y ejecutar en la bandeja
+
+Tras guardar, aparece el icono.
+
+![Icono](docs/images/tray.png)
+
 ### Funciones
 
 - **Ciclos trabajo/descanso**: configura duración de trabajo y pantalla negra (minutos).
@@ -45,40 +73,6 @@ Descarga del EXE para Windows:
 2. Ajusta la configuración.
 3. Pulsa “Save & Restart Assistant”. La app se ocultará y quedará en la bandeja del sistema.
 4. Clic derecho en el icono para abrir ajustes o salir.
-
----
-
-## Tutorial ilustrado (Windows)
-
-Aplica para EXE y para `python main.py`.
-
-Capturas: [docs/images](docs/images/) (Español: `docs/images/es_ES/`).
-
-### 1) Primer inicio y configuración
-
-1. Ejecuta `VitalityGuard.exe`. Se abre la ventana de ajustes (si no, revisa la bandeja).
-2. **Ajustar duraciones** (Recomendado):
-   - Trabajo 60 min / Pantalla negra 5 min / Cuenta atrás 10 s
-3. **Descanso nocturno** (Opcional):
-   - Si está activado (por defecto 22:30 - 07:00), el sistema forzará la hibernación. ¡Prueba primero durante el día!
-
-![Ajustes](docs/images/es_ES/01-settings-home.png)
-
-### 2) Desbloquear durante pantalla negra (activado por defecto)
-
-Opción: permitir desbloqueo (botón y `ESC` x5).
-
-![Desbloqueo](docs/images/es_ES/03-black-screen-unlock.png)
-
-### 3) Guardar y ejecutar en la bandeja
-
-Tras guardar, aparece el icono.
-
-![Icono](docs/images/tray.png)
-
-![Menú](docs/images/es_ES/04-tray-menu.png)
-
-### 4) Archivo de configuración
 
 Ruta: `%APPDATA%\\VitalityGuard\\config.json`
 
