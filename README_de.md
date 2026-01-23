@@ -50,34 +50,23 @@ Gilt für EXE und `python main.py`.
 
 Screenshots: [docs/images](docs/images/) (Deutsch: `docs/images/de_DE/`).
 
-### 1) Erster Start
+### 1) Erster Start und Einstellungen
 
-1. `VitalityGuard.exe` starten.
-2. Einstellungsfenster öffnet sich (sonst Tray prüfen).
+1. `VitalityGuard.exe` starten. Einstellungsfenster öffnet sich (sonst Tray prüfen).
+2. **Zeiten einstellen** (Empfohlen):
+   - Arbeit 60 min / Schwarzer Bildschirm 5 min / Countdown 10 s
+3. **Nachtruhe** (Optional):
+   - Wenn aktiviert (Standard 22:30 - 07:00), wird das System in den Ruhezustand versetzt. Bitte tagsüber testen!
 
 ![Einstellungen](docs/images/de_DE/01-settings-home.png)
 
-### 2) Zeiten einstellen (empfohlene Standardwerte)
-
-- Arbeitsdauer (Minuten)
-- Schwarzer Bildschirm (Minuten)
-- Countdown (Sekunden, 0 = aus)
-
-Empfohlen:
-
-- Arbeit 60 min
-- Schwarzer Bildschirm 5 min
-- Countdown 10 s
-
-![Zeiten](docs/images/de_DE/02-mode-and-durations.png)
-
-### 3) Entsperren während schwarzem Bildschirm (Standard: an)
+### 2) Entsperren während schwarzem Bildschirm (Standard: an)
 
 Option: Entsperren erlauben (Button und `ESC` 5x).
 
 ![Entsperren](docs/images/de_DE/03-black-screen-unlock.png)
 
-### 4) Speichern und im Tray ausführen
+### 3) Speichern und im Tray ausführen
 
 Nach dem Speichern erscheint das Tray-Icon.
 
@@ -85,11 +74,7 @@ Nach dem Speichern erscheint das Tray-Icon.
 
 ![Tray-Menü](docs/images/de_DE/04-tray-menu.png)
 
-### 5) Nachtruhe (optional)
-
-![Nachtruhe](docs/images/de_DE/05-night-rest.png)
-
-### 6) Konfigurationsdatei
+### 4) Konfigurationsdatei
 
 Pfad: `%APPDATA%\\VitalityGuard\\config.json`
 

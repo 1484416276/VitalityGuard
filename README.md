@@ -58,30 +58,17 @@ This section is for running the EXE directly, and also applies to `python main.p
 
 Screenshots are in [docs/images](docs/images/) (e.g. English: `docs/images/en_US/`).
 
-### 1) First launch
+### 1) First Launch & Settings
 
-1. Run `VitalityGuard.exe`.
-2. The settings window opens (if not, check the system tray).
+1. Run `VitalityGuard.exe`. The settings window should open (check tray if not).
+2. **Adjust Durations** (Recommended):
+   - Work 60 min / Black screen 5 min / Countdown 10 sec
+3. **Night Rest** (Optional):
+   - When enabled (default 22:30 - 07:00), the system will force hibernation. Test during the day first!
 
 ![Settings window](docs/images/en_US/01-settings-home.png)
 
-### 2) Adjust durations (recommended defaults)
-
-Adjust:
-
-- Work duration (minutes)
-- Black screen duration (minutes)
-- Countdown (seconds, 0 = off)
-
-Recommended defaults:
-
-- Work 60 min
-- Black screen 5 min
-- Countdown 10 sec
-
-![Mode and durations](docs/images/en_US/02-mode-and-durations.png)
-
-### 3) Unlock during black screen (enabled by default)
+### 2) Unlock during black screen (enabled by default)
 
 Setting: `Allow unlock during black screen (button and ESC x5)`
 
@@ -92,7 +79,7 @@ When enabled, you can unlock by:
 
 ![Black screen unlock](docs/images/en_US/03-black-screen-unlock.png)
 
-### 4) Save and run in tray
+### 3) Save and run in tray
 
 After clicking “Save & Restart Assistant”:
 
@@ -103,13 +90,7 @@ After clicking “Save & Restart Assistant”:
 
 ![Tray menu](docs/images/en_US/04-tray-menu.png)
 
-### 5) Night rest (optional)
-
-When enabled, the system can be forced into hibernation during the configured night window.
-
-![Night rest](docs/images/en_US/05-night-rest.png)
-
-### 6) Config file
+### 4) Config file
 
 Config file: `%APPDATA%\\VitalityGuard\\config.json`
 

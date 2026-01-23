@@ -50,34 +50,23 @@ Aplica para EXE y para `python main.py`.
 
 Capturas: [docs/images](docs/images/) (Español: `docs/images/es_ES/`).
 
-### 1) Primer inicio
+### 1) Primer inicio y configuración
 
-1. Ejecuta `VitalityGuard.exe`.
-2. Se abre la ventana de ajustes (si no, revisa la bandeja).
+1. Ejecuta `VitalityGuard.exe`. Se abre la ventana de ajustes (si no, revisa la bandeja).
+2. **Ajustar duraciones** (Recomendado):
+   - Trabajo 60 min / Pantalla negra 5 min / Cuenta atrás 10 s
+3. **Descanso nocturno** (Opcional):
+   - Si está activado (por defecto 22:30 - 07:00), el sistema forzará la hibernación. ¡Prueba primero durante el día!
 
 ![Ajustes](docs/images/es_ES/01-settings-home.png)
 
-### 2) Ajustar duraciones (valores recomendados)
-
-- Duración de trabajo (min)
-- Duración de pantalla negra (min)
-- Cuenta atrás (segundos, 0 = desactivado)
-
-Recomendado:
-
-- Trabajo 60 min
-- Pantalla negra 5 min
-- Cuenta atrás 10 s
-
-![Duraciones](docs/images/es_ES/02-mode-and-durations.png)
-
-### 3) Desbloquear durante pantalla negra (activado por defecto)
+### 2) Desbloquear durante pantalla negra (activado por defecto)
 
 Opción: permitir desbloqueo (botón y `ESC` x5).
 
 ![Desbloqueo](docs/images/es_ES/03-black-screen-unlock.png)
 
-### 4) Guardar y ejecutar en la bandeja
+### 3) Guardar y ejecutar en la bandeja
 
 Tras guardar, aparece el icono.
 
@@ -85,11 +74,7 @@ Tras guardar, aparece el icono.
 
 ![Menú](docs/images/es_ES/04-tray-menu.png)
 
-### 5) Descanso nocturno (opcional)
-
-![Descanso nocturno](docs/images/es_ES/05-night-rest.png)
-
-### 6) Archivo de configuración
+### 4) Archivo de configuración
 
 Ruta: `%APPDATA%\\VitalityGuard\\config.json`
 
