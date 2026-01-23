@@ -61,9 +61,9 @@ EXE 실행 및 `python main.py` 모두에 적용됩니다.
 
 권장:
 
-- 작업 45분
+- 작업 60분
 - 검은 화면 5분
-- 카운트다운 5초
+- 카운트다운 10초
 
 ![시간](docs/images/ko_KR/02-mode-and-durations.png)
 
@@ -110,4 +110,3 @@ Windows에서 `^`(숨겨진 아이콘)에 있을 수 있습니다.
 WeChat 추가:
 
 ![WeChat QR](微信二维码.jpg)
-

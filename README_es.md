@@ -61,9 +61,9 @@ Capturas: [docs/images](docs/images/) (Español: `docs/images/es_ES/`).
 
 Recomendado:
 
-- Trabajo 45 min
+- Trabajo 60 min
 - Pantalla negra 5 min
-- Cuenta atrás 5 s
+- Cuenta atrás 10 s
 
 ![Duraciones](docs/images/es_ES/02-mode-and-durations.png)
 
@@ -110,4 +110,3 @@ Windows puede ocultarlo bajo `^` (iconos ocultos).
 Añádeme en WeChat:
 
 ![WeChat QR](微信二维码.jpg)
-

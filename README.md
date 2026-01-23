@@ -63,9 +63,9 @@ Adjust:
 
 Recommended defaults:
 
-- Work 45 min
+- Work 60 min
 - Black screen 5 min
-- Countdown 5 sec
+- Countdown 10 sec
 
 ![Mode and durations](docs/images/en_US/02-mode-and-durations.png)
 

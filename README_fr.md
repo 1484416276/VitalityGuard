@@ -61,9 +61,9 @@ Captures : [docs/images](docs/images/) (Français : `docs/images/fr_FR/`).
 
 Recommandé :
 
-- Travail 45 min
+- Travail 60 min
 - Écran noir 5 min
-- Compte à rebours 5 s
+- Compte à rebours 10 s
 
 ![Durées](docs/images/fr_FR/02-mode-and-durations.png)
 
@@ -110,4 +110,3 @@ Windows peut la placer sous `^` (icônes masquées).
 Ajoutez-moi sur WeChat :
 
 ![WeChat QR](微信二维码.jpg)
-

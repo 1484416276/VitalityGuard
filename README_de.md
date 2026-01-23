@@ -61,9 +61,9 @@ Screenshots: [docs/images](docs/images/) (Deutsch: `docs/images/de_DE/`).
 
 Empfohlen:
 
-- Arbeit 45 min
+- Arbeit 60 min
 - Schwarzer Bildschirm 5 min
-- Countdown 5 s
+- Countdown 10 s
 
 ![Zeiten](docs/images/de_DE/02-mode-and-durations.png)
 
@@ -110,4 +110,3 @@ Windows kann es unter `^` (ausgeblendete Symbole) verstecken.
 WeChat hinzufügen:
 
 ![WeChat QR](微信二维码.jpg)
-

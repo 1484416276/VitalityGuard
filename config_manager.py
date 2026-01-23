@@ -14,17 +14,17 @@ _RUNTIME_CURRENT_MODE = None
 DEFAULT_CONFIG = {
     "language": "zh_CN",
     "current_mode": "default",
-    "auto_start": False,
+    "auto_start": True,
     "modes": {
         "default": {
             "name": "默认模式",
-            "work_duration_minutes": 45,
+            "work_duration_minutes": 60,
             "rest_duration_minutes": 5,
             "allow_black_screen_unlock": True,
-            "night_sleep_enabled": True,
+            "night_sleep_enabled": False,
             "night_sleep_start": "22:30",
             "night_sleep_end": "07:00",
-            "countdown_seconds": 5
+            "countdown_seconds": 10
         }
     }
 }
