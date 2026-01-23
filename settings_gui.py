@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config_manager import ConfigManager, get_runtime_current_mode, set_runtime_current_mode
+from config_manager import ConfigManager, set_runtime_current_mode
 import tkinter.messagebox
 from i18n import i18n
 from utils.system_ops import set_windows_startup

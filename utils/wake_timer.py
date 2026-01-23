@@ -1,7 +1,5 @@
 import ctypes
-from ctypes import wintypes
 import logging
-import datetime
 import subprocess
 
 class WakeTimer:
@@ -76,8 +74,6 @@ class WakeTimer:
         创建一个一次性的 Windows 计划任务来唤醒电脑
         """
         try:
-            # 计算唤醒时间
-            wake_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
             # 格式化时间为 HH:mm:ss (schtasks 需要)
             # 注意：schtasks /st 只能精确到分钟 (HH:mm) 或者秒?
             # schtasks 的 /ST 参数通常是 HH:mm，不带秒。这可能不够精确。
@@ -92,8 +88,6 @@ class WakeTimer:
                 logging.warning("Scheduled Task interval too short (<60s), skipping backup wake method.")
                 return False
                 
-            start_time = wake_time.strftime("%H:%M")
-            start_date = wake_time.strftime("%d/%m/%Y") # depend on locale? 
             # schtasks /Create /SC ONCE /TN "VitalityGuardWake" /TR "cmd.exe /c echo Waking up" /ST HH:mm /SD dd/mm/yyyy /F /RL HIGHEST
             # 还要确保勾选 "Wake the computer to run this task" -> 这只能通过 XML 或 PowerShell 设置。
             # 简单的 schtasks 命令行默认不开启 "Wake the computer"。

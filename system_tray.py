@@ -2,8 +2,6 @@ import pystray
 from PIL import Image, ImageDraw
 import threading
 import sys
-import os
-import tkinter as tk
 from i18n import i18n
 import logging
 

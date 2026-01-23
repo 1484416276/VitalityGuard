@@ -1,7 +1,3 @@
-import json
-import os
-import locale
-
 LANG_FILE = "lang.json"
 
 DEFAULT_LANG = "zh_CN"

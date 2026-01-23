@@ -6,11 +6,16 @@ import logging
 import ctypes
 import subprocess
 import sys
+from types import ModuleType
+from typing import Optional
 
+_winreg: Optional[ModuleType]
 try:
-    import winreg
+    import winreg as _winreg
 except Exception:
-    winreg = None
+    _winreg = None
+
+winreg = _winreg
 
 _RUN_KEY_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
 _APP_RUN_NAME = "VitalityGuard"

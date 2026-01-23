@@ -1,9 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 import sys
-import threading
 import time
-import random
 import logging
 from scheduler_logic import SchedulerLogic
 from utils.system_ops import save_current_work, force_hibernate
@@ -42,7 +40,7 @@ class ScreenLockerApp:
         print("Starting GUI...")
         try:
             self.tray.start_in_thread()
-        except Exception as e:
+        except Exception:
             logging.exception("Failed to start tray thread")
         self.root.after(1200, self._verify_tray_ready)
         self.gui.run()

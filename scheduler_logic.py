@@ -1,6 +1,5 @@
 import time
-import random
-from datetime import datetime, timedelta
+from datetime import datetime
 from config_manager import ConfigManager
 
 class SchedulerLogic:
@@ -128,4 +127,3 @@ class SchedulerLogic:
                 return self.ACTION_UNLOCK
 
         return self.ACTION_NONE
-

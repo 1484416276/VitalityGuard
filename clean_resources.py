@@ -1,6 +1,4 @@
-import os
 import subprocess
-import logging
 
 def clean_resources():
     print("Starting resource cleanup...")
