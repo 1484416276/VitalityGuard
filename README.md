@@ -6,6 +6,14 @@
 
 **VitalityGuard** is a desktop health and control tool designed for Windows, aiming to help users manage work/rest cycles and enforce rest during specific times (e.g., night rest).
 
+### Recent Updates
+
+- Fixed Tcl/Tk version conflict in PyInstaller build
+- Improved EXE logging for easier troubleshooting
+- Added --self-test for automated positive/negative flow checks
+- Moved local tools/tests under .local to avoid GitHub uploads
+- Added EXE download link
+
 ### Features
 
 - **Work/Rest Cycles**: Customizable work/rest cycles (minutes).
@@ -21,6 +29,10 @@
   - **Optional Unlock During Black Screen**: Button click + press `ESC` 5 times (configurable).
 
 ### Installation
+
+Download Windows EXE:
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
 
 1. Ensure Python 3.8+ is installed.
 2. Install dependencies:
@@ -109,7 +121,7 @@ Config file: `%APPDATA%\\VitalityGuard\\config.json`
 
 ### EXE exits immediately / no window
 
-Run `VitalityGuardDebug.exe` to see console errors, or check:
+VitalityGuard.exe will write logs for troubleshooting. Check:
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 

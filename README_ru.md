@@ -22,6 +22,10 @@
 
 ### Установка
 
+Скачать Windows EXE:
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
+
 1. Убедитесь, что установлен Python 3.8+.
 2. Установите зависимости:
    ```bash
@@ -97,7 +101,7 @@
 
 ### EXE сразу закрывается / нет окна
 
-Запустите `VitalityGuardDebug.exe` или проверьте лог:
+VitalityGuard.exe записывает лог для диагностики. Проверьте:
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 

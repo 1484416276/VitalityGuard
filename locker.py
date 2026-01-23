@@ -47,6 +47,96 @@ class ScreenLockerApp:
         self.root.after(1200, self._verify_tray_ready)
         self.gui.run()
 
+    def start_self_test(self):
+        """
+        运行简短的 GUI 自检（用于真实运行时的正例/反例覆盖）。
+
+        行为：
+        - 反例：写入非法数值并触发保存，验证不会崩溃
+        - 正例：写入合法数值并模拟点击“保存并重启助手”，进入后台循环
+        - 模拟关闭窗口最小化到托盘、再从托盘显示设置、最后退出
+        """
+        import tkinter.messagebox as _mb
+
+        def _stub(name):
+            def _fn(title=None, message=None, *args, **kwargs):
+                try:
+                    logging.info("[SELF-TEST] messagebox.%s title=%s message=%s", name, title, message)
+                except Exception:
+                    pass
+                return True
+            return _fn
+
+        try:
+            _mb.showerror = _stub("showerror")
+            _mb.showinfo = _stub("showinfo")
+            _mb.showwarning = _stub("showwarning")
+        except Exception:
+            pass
+
+        try:
+            self.tray.start_in_thread()
+        except Exception:
+            logging.exception("[SELF-TEST] Failed to start tray thread")
+
+        def _negative_case():
+            try:
+                if hasattr(self.gui, "entry_work_duration_minutes"):
+                    self.gui.entry_work_duration_minutes.delete(0, "end")
+                    self.gui.entry_work_duration_minutes.insert(0, "not-a-number")
+                ok = self.gui.save_settings(show_message=False)
+                logging.info("[SELF-TEST] negative save_settings ok=%s", ok)
+            except Exception:
+                logging.exception("[SELF-TEST] negative case failed")
+
+        def _positive_case():
+            try:
+                if hasattr(self.gui, "entry_work_duration_minutes"):
+                    self.gui.entry_work_duration_minutes.delete(0, "end")
+                    self.gui.entry_work_duration_minutes.insert(0, "1")
+                if hasattr(self.gui, "entry_rest_duration_minutes"):
+                    self.gui.entry_rest_duration_minutes.delete(0, "end")
+                    self.gui.entry_rest_duration_minutes.insert(0, "1")
+                if hasattr(self.gui, "entry_countdown_seconds"):
+                    self.gui.entry_countdown_seconds.delete(0, "end")
+                    self.gui.entry_countdown_seconds.insert(0, "0")
+                try:
+                    self.gui.var_night.set(False)
+                    self.gui.toggle_night_settings()
+                except Exception:
+                    pass
+
+                logging.info("[SELF-TEST] clicking start_app")
+                self.gui.start_app()
+            except Exception:
+                logging.exception("[SELF-TEST] positive case failed")
+
+        def _simulate_close_to_tray():
+            try:
+                self._on_root_close()
+                logging.info("[SELF-TEST] simulated window close (withdraw/iconify)")
+            except Exception:
+                logging.exception("[SELF-TEST] simulate close failed")
+
+        def _simulate_show_settings():
+            try:
+                self.show_settings()
+                logging.info("[SELF-TEST] simulated show settings via tray callback")
+            except Exception:
+                logging.exception("[SELF-TEST] simulate show settings failed")
+
+        def _finish_exit():
+            logging.info("[SELF-TEST] quitting")
+            self.quit_app()
+
+        self.root.after(300, _negative_case)
+        self.root.after(900, _positive_case)
+        self.root.after(1800, _simulate_close_to_tray)
+        self.root.after(2600, _simulate_show_settings)
+        self.root.after(3600, _finish_exit)
+
+        self.gui.run()
+
     def _verify_tray_ready(self):
         if self.tray.last_error:
             try:
@@ -103,10 +193,29 @@ class ScreenLockerApp:
 
     def quit_app(self):
         """完全退出"""
-        print("Exiting application...")
-        self.tray.stop()
-        self.root.quit()
-        sys.exit(0)
+        try:
+            print("Exiting application...")
+            try:
+                self.tray.stop()
+            except BaseException:
+                pass
+
+            def _do_quit():
+                try:
+                    self.root.quit()
+                except Exception:
+                    pass
+                try:
+                    self.root.destroy()
+                except Exception:
+                    pass
+
+            try:
+                self.root.after(0, _do_quit)
+            except Exception:
+                _do_quit()
+        except BaseException:
+            pass
 
     def _perform_sleep_lock(self):
         """执行强制黑屏锁定 (替代休眠)"""

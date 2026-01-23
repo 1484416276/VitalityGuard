@@ -6,6 +6,14 @@
 
 **VitalityGuard (防猝死助手)** 是一个专为 Windows 设计的桌面健康与控制工具，旨在帮助用户管理工作与休息时间，并在特定时间（如夜间休息）强制休息。
 
+### 最近更新
+
+- 修复 PyInstaller 打包后 Tcl/Tk 版本冲突问题
+- 增强 EXE 日志落盘与异常排查能力
+- 新增自检参数（--self-test）以覆盖正反例
+- 本地测试/工具归档至 .local，避免推送到 GitHub
+- README 增加 EXE 下载入口
+
 ### 功能特性
 
 - **工作/休息循环**：自定义工作/黑屏时长（分钟）。
@@ -21,6 +29,10 @@
   - **可选黑屏解锁**：黑屏时可通过“紧急解锁”按钮或连按 `ESC` 5 次解锁（可配置）。
 
 ### 安装
+
+Windows EXE 下载地址：
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
 
 1. 确保已安装 Python 3.8+。
 2. 安装依赖：
@@ -106,7 +118,7 @@
 
 ### 双击 EXE 没反应 / 一闪而过
 
-优先运行 `VitalityGuardDebug.exe` 查看控制台报错，或查看日志：
+VitalityGuard.exe 会记录日志用于排查问题，请查看：
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 

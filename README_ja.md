@@ -22,6 +22,10 @@
 
 ### インストール
 
+Windows EXE ダウンロード：
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
+
 1. Python 3.8以上がインストールされていることを確認してください。
 2. 依存関係をインストールします：
    ```bash
@@ -106,7 +110,7 @@
 
 ### EXE がすぐ終了する / 画面が出ない
 
-`VitalityGuardDebug.exe` でコンソールエラーを確認するか、ログを確認してください：
+VitalityGuard.exe はログを記録します。以下を確認してください：
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 

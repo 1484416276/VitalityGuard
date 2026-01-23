@@ -12,6 +12,11 @@ hiddenimports += collect_submodules('pygetwindow')
 hiddenimports += collect_submodules('mouseinfo')
 
 def _walk_data_files(src_dir, dest_prefix):
+    """
+    将目录下所有文件递归映射为 PyInstaller datas 列表项。
+
+    返回格式：[(src_path, dest_dir), ...]
+    """
     out = []
     for root, _, files in os.walk(src_dir):
         for file_name in files:

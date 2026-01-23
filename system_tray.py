@@ -42,9 +42,15 @@ class SystemTrayIcon:
             self.on_show()
 
     def action_quit(self, icon, item):
-        icon.stop()
+        try:
+            icon.stop()
+        except BaseException:
+            pass
         if self.on_quit:
-            self.on_quit()
+            try:
+                self.on_quit()
+            except BaseException:
+                pass
 
     def run(self):
         try:
@@ -66,7 +72,10 @@ class SystemTrayIcon:
 
     def stop(self):
         if self.icon:
-            self.icon.stop()
+            try:
+                self.icon.stop()
+            except BaseException:
+                pass
 
     def show_notification(self, title, message):
         if self.icon:

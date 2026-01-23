@@ -29,7 +29,7 @@ jobs:
       - name: Build onefile exe
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name VitalityGuard main.py
+          python -m PyInstaller --noconfirm --clean VitalityGuardOnefile.spec
 
       - name: Prepare artifacts
         id: prep

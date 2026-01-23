@@ -22,6 +22,10 @@
 
 ### Installation
 
+Téléchargement de l’EXE Windows :
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
+
 1. Vérifiez que Python 3.8+ est installé.
 2. Installez les dépendances :
    ```bash
@@ -97,7 +101,7 @@ Chemin : `%APPDATA%\\VitalityGuard\\config.json`
 
 ### L’EXE se ferme immédiatement / aucune fenêtre
 
-Lancez `VitalityGuardDebug.exe` pour voir les erreurs, ou vérifiez :
+VitalityGuard.exe enregistre des logs pour le diagnostic. Vérifiez :
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 

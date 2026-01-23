@@ -22,6 +22,10 @@
 
 ### 설치
 
+Windows EXE 다운로드:
+
+- https://github.com/1484416276/VitalityGuard/releases/latest
+
 1. Python 3.8+ 설치.
 2. 의존성 설치:
    ```bash
@@ -97,7 +101,7 @@ EXE 실행 및 `python main.py` 모두에 적용됩니다.
 
 ### EXE가 바로 종료됨 / 창이 안 뜸
 
-`VitalityGuardDebug.exe` 실행 또는 로그 확인:
+VitalityGuard.exe는 문제 진단을 위한 로그를 기록합니다. 아래 로그를 확인하세요:
 
 - `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 
