@@ -7,9 +7,10 @@ import time
 from datetime import datetime
 
 class SettingsGUI:
-    def __init__(self, root_callback=None, quit_callback=None):
+    def __init__(self, root_callback=None, quit_callback=None, scheduler=None):
         self.config_manager = ConfigManager()
         self.config = self.config_manager.config
+        self.scheduler = scheduler
         
         # Init Language
         self.lang = self.config.get("language", "zh_CN")
