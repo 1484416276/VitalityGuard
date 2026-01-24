@@ -1,10 +1,10 @@
-# VitalityGuard - 防成迷助手
+# VitalityGuard - 防沉迷助手
 
 [English](README.md) | [日本語](README_ja.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Español](README_es.md) | [한국어](README_ko.md) | [Русский](README_ru.md)
 
 > **“又听闻有人猝死的新闻，深感痛心。花了几天时间写了这个助手，希望能帮到大家。”**
 
-**VitalityGuard (防成迷助手)** 是一个专为 Windows 设计的简单而强大的防猝死，防沉迷工具。
+**VitalityGuard (防沉迷助手)** 是一个专为 Windows 设计的简单而强大的防猝死，防沉迷工具。
 
 **简单粗暴，极其有效**：拒绝复杂，只有**一个配置页面**。
 
@@ -86,12 +86,6 @@ Windows EXE 下载地址：
 ---
 
 ## 常见问题
-
-### 双击 EXE 没反应 / 一闪而过
-
-VitalityGuard.exe 会记录日志用于排查问题，请查看：
-
-- `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
 
 ### 托盘里找不到图标
 

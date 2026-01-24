@@ -211,7 +211,7 @@ def main():
     
     args = parser.parse_args()
 
-    print("Starting VitalityGuard (防成迷助手)...")
+    print("Starting VitalityGuard (防沉迷助手)...")
     if args.dry_run:
         print("WARNING: DRY RUN MODE ENABLED (Shutdown will be simulated)")
     if args.test_mode:
