@@ -15,6 +15,7 @@ DEFAULT_CONFIG = {
     "language": "zh_CN",
     "current_mode": "default",
     "auto_start": True,
+    "auto_update": True,
     "modes": {
         "default": {
             "name": "默认模式",

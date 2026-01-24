@@ -221,6 +221,14 @@ def main():
     if args.self_test:
         print("WARNING: SELF TEST ENABLED (auto actions)")
 
+    # Start Updater
+    from utils.updater import Updater
+    try:
+        updater = Updater(ConfigManager())
+        updater.start_check_loop()
+    except Exception as e:
+        logging.error(f"Failed to start updater: {e}")
+
     from locker import ScreenLockerApp
     app = ScreenLockerApp(test_mode=args.test_mode, dry_run=args.dry_run, mock_curfew=args.mock_curfew)
     try:

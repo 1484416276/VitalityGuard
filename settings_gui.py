@@ -244,6 +244,7 @@ class SettingsGUI:
 
         # Update global config
         self.config["current_mode"] = "default"
+        self.config["auto_update"] = self.var_auto_update.get()
         self.config_manager.save_config(self.config)
         set_runtime_current_mode(None)
         
