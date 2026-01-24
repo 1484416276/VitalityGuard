@@ -10,13 +10,38 @@
 
 It helps you enforce work/rest cycles and mandatory night rest to prevent health risks caused by prolonged computer use.
 
-### Recent Updates
+## Illustrated Tutorial (Windows)
 
-- Fixed Tcl/Tk version conflict in PyInstaller build
-- Improved EXE logging for easier troubleshooting
-- Added --self-test for automated positive/negative flow checks
-- Moved local tools/tests under .local to avoid GitHub uploads
-- Added EXE download link
+This section applies to "Running EXE directly" as well as `python main.py`.
+
+Screenshots are located in [docs/images](docs/images/); English screenshots are in `docs/images/en_US/`.
+
+### 1) Run and Setup
+
+1. Run `VitalityGuard.exe`. The settings window will pop up (if not, check the tray icon).
+2. **Set Durations** (Recommended defaults):
+   - Work 60 minutes / Black Screen 5 minutes / Countdown 10 seconds
+3. **Night Rest** (Optional):
+   - When enabled, during the specified period (default 22:30 - 07:00), it will force hibernation. Recommended for personal home computers.
+
+![Settings Home](docs/images/en_US/01-settings-home.png)
+
+### 2) Black Screen (Unlock options)
+
+Config item: `Allow unlock during black screen (button and ESC x5)`
+
+When enabled, both unlock methods are available during the black screen:
+
+- Click the "Emergency Unlock" button
+- Press `ESC` 5 times rapidly
+
+![Black Screen Unlock](docs/images/en_US/03-black-screen-unlock.png)
+
+### 3) Minimize to Tray
+
+After clicking "Save & Restart Assistant", the program will hide and show an icon in the system tray.
+
+![Tray Icon](docs/images/tray.png)
 
 ### Features
 
@@ -25,16 +50,16 @@ It helps you enforce work/rest cycles and mandatory night rest to prevent health
   - Enforces a black screen during rest periods.
   - Option to force system hibernation for stricter control.
 - **Night Rest Mode**:
-  - Mandatory rest period (e.g., 22:30 - 07:00).
-  - **Forced Hibernation**: System will be forced to hibernate if turned on during night rest.
+  - Mandatory rest period (default 22:30 - 07:00).
+  - **Forced Hibernation**: If turned on during this period, the computer will be immediately forced into hibernation.
 - **Modern GUI**: Built with `customtkinter`.
 - **Internationalization**: Supports 8 languages (English/Chinese/Japanese/French/German/Spanish/Korean/Russian).
 - **Safety Features**:
-  - **Optional Unlock During Black Screen**: Button click + press `ESC` 5 times (configurable).
+  - **Optional Unlock During Black Screen**: Unlock via "Emergency Unlock" button or pressing `ESC` 5 times (configurable).
 
 ### Installation
 
-Download Windows EXE:
+Windows EXE Download:
 
 - https://github.com/1484416276/VitalityGuard/releases/latest
 
@@ -46,15 +71,15 @@ Download Windows EXE:
 
 ### Usage
 
-1. Run the application:
+1. Run the program:
    ```bash
    python main.py
    ```
-2. Configure settings in the GUI.
-3. Click "Save & Restart Assistant". The app will minimize to the system tray.
-4. Right-click the tray icon to open settings or quit.
+2. Adjust parameters in the settings window.
+3. Click "Save & Restart Assistant". The program will hide and run in the background.
+4. Right-click the system tray icon to reopen settings or exit.
 
-Config file: `%APPDATA%\\VitalityGuard\\config.json`
+Config file path: `%APPDATA%\VitalityGuard\config.json`
 
 ![config.json](docs/images/en_US/06-config-json.png)
 
@@ -62,43 +87,17 @@ Config file: `%APPDATA%\\VitalityGuard\\config.json`
 
 ## FAQ
 
-### EXE exits immediately / no window
+### Tray icon not found
 
-VitalityGuard.exe will write logs for troubleshooting. Check:
+Windows might have collapsed it into the `^` (Hidden Icons) area.
 
-- `%APPDATA%\\VitalityGuard\\logs\\vitalityguard.log`
+### Feedback & Suggestions
 
-### Cannot find tray icon
+If you have any suggestions or find bugs, feel free to submit an Issue or Pull Request!
+Your feedback helps us make VitalityGuard better.
 
-Windows may hide it under the `^` (hidden tray icons).
+### Contact Author
 
-### Feedback
-
-Suggestions and Pull Requests are welcome!
-If you find any bugs or have ideas for new features, please open an issue.
-
-### Contact
-
-Add me on WeChat:
+Scan WeChat QR code to add:
 
 ![WeChat QR](微信二维码.jpg)
-
-Setting: `Allow unlock during black screen (button and ESC x5)`
-
-When enabled, you can unlock by:
-
-- Clicking the “Emergency Unlock” button
-- Pressing `ESC` 5 times
-
-![Black screen unlock](docs/images/en_US/03-black-screen-unlock.png)
-
-### 3) Minimize to Tray
-
-After clicking “Save & Restart Assistant”:
-
-- The window hides (runs in background)
-- A tray icon appears
-
-![Tray icon](docs/images/tray.png)
-
-### Features
