@@ -14,10 +14,6 @@ github_url : https://github.com/1484416276/VitalityGuard/
 
 ## 그림 튜토리얼 (Windows)
 
-EXE 실행 및 `python main.py` 모두에 적용됩니다.
-
-스크린샷: [docs/images](docs/images/) (한국어: `docs/images/ko_KR/`).
-
 ### 1) 첫 실행 및 설정
 
 1. `VitalityGuard.exe` 실행. 설정 창이 열립니다(안 열리면 트레이를 확인).

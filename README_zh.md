@@ -14,10 +14,6 @@ github_url : https://github.com/1484416276/VitalityGuard/
 
 ## 图文教程（Windows）
 
-本节适用于“直接用 EXE 运行”，也适用于 `python main.py` 运行。
-
-截图文件放在 [docs/images](docs/images/)；中文截图默认放在 `docs/images/zh_CN/`。
-
 ### 1) 运行和设置
 
 1. 运行 `VitalityGuard.exe`，弹出设置窗口（若未弹出请检查托盘图标）。

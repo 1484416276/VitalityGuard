@@ -14,10 +14,6 @@ It helps you enforce work/rest cycles and mandatory night rest to prevent health
  
  ## Illustrated Tutorial (Windows)
 
-This section applies to "Running EXE directly" as well as `python main.py`.
-
-Screenshots are located in [docs/images](docs/images/); English screenshots are in `docs/images/en_US/`.
-
 ### 1) Run and Setup
 
 1. Run `VitalityGuard.exe`. The settings window will pop up (if not, check the tray icon).

@@ -14,10 +14,6 @@ github_url : https://github.com/1484416276/VitalityGuard/
 
 ## Иллюстрированное руководство (Windows)
 
-Подходит для запуска EXE и `python main.py`.
-
-Скриншоты: [docs/images](docs/images/) (Русский: `docs/images/ru_RU/`).
-
 ### 1) Первый запуск и настройка
 
 1. Запустите `VitalityGuard.exe`. Откроется окно настроек (если нет — проверьте трей).

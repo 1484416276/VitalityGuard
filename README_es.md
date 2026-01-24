@@ -14,10 +14,6 @@ github_url : https://github.com/1484416276/VitalityGuard/
 
 ## Tutorial ilustrado (Windows)
 
-Aplica para EXE y para `python main.py`.
-
-Capturas: [docs/images](docs/images/) (Español: `docs/images/es_ES/`).
-
 ### 1) Primer inicio y configuración
 
 1. Ejecuta `VitalityGuard.exe`. Se abre la ventana de ajustes (si no, revisa la bandeja).
