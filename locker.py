@@ -27,7 +27,8 @@ class ScreenLockerApp:
         
         # 使用 SettingsGUI 作为主界面
         # Pass quit_callback to handle full exit
-        self.gui = SettingsGUI(root_callback=self.start_service, quit_callback=self.quit_app)
+        # Pass scheduler to SettingsGUI for status display
+        self.gui = SettingsGUI(root_callback=self.start_service, quit_callback=self.quit_app, scheduler=self.scheduler)
         self.root = self.gui.root # 兼容引用
 
         # System Tray

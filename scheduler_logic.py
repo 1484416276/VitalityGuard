@@ -26,20 +26,60 @@ class SchedulerLogic:
     def get_config(self):
         return self.config_manager.get_current_mode_config()
 
+    def get_next_transition_time(self):
+        """获取下一次状态转换的时间戳"""
+        return self.next_transition_time
+
+    def get_current_interval(self, state=None):
+        """获取当前状态应有的持续时间（秒）"""
+        config = self.get_config()
+        state = state or self.state
+        
+        if state == self.STATE_WORKING:
+            if self.test_mode:
+                return 10
+            return config.get("work_duration_minutes", 40) * 60
+        elif state == self.STATE_LOCKED:
+            if self.test_mode:
+                return 5
+            return config.get("rest_duration_minutes", 10) * 60
+        return 0
+
     def reload_config(self):
-        """重新加载配置并重置计时器"""
+        """重新加载配置并重置计时器（保持已过时间）"""
         print("[Scheduler] Reloading configuration...")
+        
+        # 1. Calculate how long we have been in current state
+        now = time.time()
+        old_interval = self.get_current_interval() # Based on OLD config (before reload)
+        
+        # Calculate time passed: total_interval - remaining_time
+        # remaining_time = next_transition_time - now
+        # elapsed = old_interval - remaining_time
+        remaining_time_old = self.next_transition_time - now
+        elapsed_time = old_interval - remaining_time_old
+        
+        # If something is wrong (negative elapsed), reset to 0
+        if elapsed_time < 0:
+            elapsed_time = 0
+
+        # 2. Reload config
         self.config_manager.reload_config()
         
-        # If we are in working state, reschedule the next lock based on new config
-        # This ensures immediate effect of duration changes.
-        # But we should respect time already passed? 
-        # User expectation: "I changed to 1 min, it should lock in 1 min from NOW (or sooner)"
-        # Simplest approach: Reset the timer from NOW.
-        if self.state == self.STATE_WORKING:
-            self._schedule_next_lock()
-        elif self.state == self.STATE_LOCKED:
-            self._schedule_unlock()
+        # 3. Calculate new target time
+        new_interval = self.get_current_interval() # Based on NEW config
+        
+        # New remaining time = new_interval - elapsed_time
+        new_remaining = new_interval - elapsed_time
+        
+        if new_remaining <= 0:
+            # We already passed the new duration!
+            # Transition immediately (or very soon)
+            self.next_transition_time = now
+            print(f"[Scheduler] Config changed. Time up! Transitioning immediately.")
+        else:
+            self.next_transition_time = now + new_remaining
+            print(f"[Scheduler] Config changed. Preserving elapsed {elapsed_time:.1f}s. New remaining: {new_remaining:.1f}s")
 
     def _schedule_next_lock(self):
         """安排下一次锁定时间"""

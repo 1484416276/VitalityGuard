@@ -3,6 +3,8 @@ from config_manager import ConfigManager, set_runtime_current_mode
 import tkinter.messagebox
 from i18n import i18n
 from utils.system_ops import set_windows_startup
+import time
+from datetime import datetime
 
 class SettingsGUI:
     def __init__(self, root_callback=None, quit_callback=None):
@@ -73,6 +75,42 @@ class SettingsGUI:
         # Save and Restart Button
         self.btn_start = ctk.CTkButton(self.root, text=i18n.get("save_restart"), command=self.start_app, fg_color="green", height=40, font=("Roboto", 16))
         self.btn_start.pack(pady=20, fill="x", padx=40)
+
+        # Status Label (Next Black Screen Time)
+        self.label_status = ctk.CTkLabel(self.root, text="Next Rest: --:--", font=("Roboto", 12), text_color="gray")
+        self.label_status.pack(side="bottom", pady=10)
+        
+        self.update_status_label()
+
+    def update_status_label(self):
+        if self.scheduler:
+            next_ts = self.scheduler.get_next_transition_time()
+            if next_ts > 0:
+                # Calculate relative time
+                now = time.time()
+                diff = next_ts - now
+                
+                if diff < 0:
+                    status_text = "Status: Transitioning..."
+                else:
+                    # Format absolute time
+                    dt = datetime.fromtimestamp(next_ts)
+                    time_str = dt.strftime("%H:%M:%S")
+                    
+                    if self.scheduler.state == self.scheduler.STATE_WORKING:
+                        status_text = f"Next Rest: {time_str} (in {int(diff/60)}m {int(diff%60)}s)"
+                    else:
+                        status_text = f"Unlock At: {time_str} (in {int(diff/60)}m {int(diff%60)}s)"
+                
+                self.label_status.configure(text=status_text)
+        
+        # Schedule next update
+        if not self.root.winfo_exists():
+            return
+        try:
+            self.root.after(1000, self.update_status_label)
+        except Exception:
+            pass
 
     def change_language(self, lang):
         if lang != self.lang:
