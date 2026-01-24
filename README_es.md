@@ -10,6 +10,8 @@
 
 Te ayuda a imponer ciclos de trabajo/descanso y descanso nocturno obligatorio para prevenir riesgos de salud causados por el uso prolongado del ordenador.
 
+github_url : https://github.com/1484416276/VitalityGuard/
+
 ## Tutorial ilustrado (Windows)
 
 Aplica para EXE y para `python main.py`.

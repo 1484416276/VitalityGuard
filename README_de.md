@@ -10,6 +10,8 @@
 
 Es hilft Ihnen, Arbeits-/Pausenzyklen und obligatorische Nachtruhe durchzusetzen, um Gesundheitsrisiken durch längere Computernutzung zu vermeiden.
 
+github_url : https://github.com/1484416276/VitalityGuard/
+
 ## Illustrierte Anleitung (Windows)
 
 Gilt für EXE und `python main.py`.

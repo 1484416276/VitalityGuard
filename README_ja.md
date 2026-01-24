@@ -10,6 +10,8 @@
 
 簡単な設定で、仕事と休憩のサイクルや夜間休憩を強制的に実行し、長時間のPC作業による健康リスクを防ぎます。
 
+github_url : https://github.com/1484416276/VitalityGuard/
+
 ## 図解チュートリアル（Windows）
 
 この章は EXE での実行を想定していますが、`python main.py` でも同様です。

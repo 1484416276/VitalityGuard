@@ -9,8 +9,10 @@
 **Simple & Effective**: No complex setup. Just **one single configuration page** to manage your health.
 
 It helps you enforce work/rest cycles and mandatory night rest to prevent health risks caused by prolonged computer use.
-
-## Illustrated Tutorial (Windows)
+ 
+ github_url : https://github.com/1484416276/VitalityGuard/
+ 
+ ## Illustrated Tutorial (Windows)
 
 This section applies to "Running EXE directly" as well as `python main.py`.
 
@@ -28,7 +30,7 @@ Screenshots are located in [docs/images](docs/images/); English screenshots are 
 
 ### 2) Black Screen (Unlock options)
 
-Config item: `Allow unlock during black screen (button and ESC x5)`
+Config item: `Allow unlock during black screen (button or ESC x5)`
 
 When enabled, both unlock methods are available during the black screen:
 

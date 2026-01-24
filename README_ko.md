@@ -10,6 +10,8 @@
 
 작업/휴식 사이클과 필수 야간 휴식을 강제하여 장시간 컴퓨터 사용으로 인한 건강 위험을 예방합니다.
 
+github_url : https://github.com/1484416276/VitalityGuard/
+
 ## 그림 튜토리얼 (Windows)
 
 EXE 실행 및 `python main.py` 모두에 적용됩니다.
