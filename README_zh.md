@@ -1,10 +1,10 @@
-# VitalityGuard - 防猝死助手
+# VitalityGuard - 防成迷助手
 
 [English](README.md) | [日本語](README_ja.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Español](README_es.md) | [한국어](README_ko.md) | [Русский](README_ru.md)
 
 > **“又听闻有人猝死的新闻，深感痛心。花了几天时间写了这个助手，希望能帮到大家。”**
 
-**VitalityGuard (防猝死助手)** 是一个专为 Windows 设计的简单而强大的防猝死，防沉迷工具。
+**VitalityGuard (防成迷助手)** 是一个专为 Windows 设计的简单而强大的防猝死，防沉迷工具。
 
 **简单粗暴，极其有效**：拒绝复杂，只有**一个配置页面**。
 
@@ -22,7 +22,7 @@
 2. **设置时长**（推荐默认值）：
    - 工作 60 分钟 / 黑屏 5 分钟 / 倒计时 10 秒
 3. **夜间休息**（可选）：
-   - 开启后，在指定时间段内（默认 22:30 - 07:00）会强制休眠，建议先在白天测试确认符合习惯再启用。
+   - 开启后，在指定时间段内（默认 22:30 - 07:00）会强制休眠，建议家庭个人电脑使用。
 
 ![设置界面](docs/images/zh_CN/01-settings-home.png)
 

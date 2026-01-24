@@ -5,7 +5,7 @@ DEFAULT_LANG = "zh_CN"
 # Embedded translations to avoid missing file issues
 TRANSLATIONS = {
     "zh_CN": {
-        "app_title": "VitalityGuard - 防猝死助手",
+        "app_title": "VitalityGuard - 防成迷助手",
         "settings_title": "VitalityGuard 配置",
         "current_mode": "当前模式:",
         "save_restart": "保存设置并重启助手",
@@ -26,11 +26,11 @@ TRANSLATIONS = {
         "error_delete_last": "至少保留一个模式",
         "success_saved": "配置已保存，助手正在后台运行",
         "error_invalid_input": "输入无效，请输入数字",
-        "tray_tooltip": "VitalityGuard (防猝死助手)",
+        "tray_tooltip": "VitalityGuard (防成迷助手)",
         "tray_menu_settings": "打开设置",
         "tray_menu_quit": "退出",
         "notification_title": "VitalityGuard",
-        "notification_started": "防猝死助手已启动，将在后台运行。",
+        "notification_started": "防成迷助手已启动，将在后台运行。",
         "countdown_text": "即将进入休息\n{time}",
         "countdown_subtext": "为了您的健康，请休息一下",
         "countdown_skip": "紧急跳过 (Skip)",
