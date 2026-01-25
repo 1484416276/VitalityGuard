@@ -66,6 +66,10 @@ class SettingsGUI:
         self.chk_auto_start = ctk.CTkCheckBox(self.global_frame, text=i18n.get("auto_start"), variable=self.var_auto_start)
         self.chk_auto_start.pack(pady=5, anchor="w", padx=10)
 
+        self.var_auto_update = ctk.BooleanVar(value=bool(self.config.get("auto_update", True)))
+        self.chk_auto_update = ctk.CTkCheckBox(self.global_frame, text=i18n.get("auto_update"), variable=self.var_auto_update)
+        self.chk_auto_update.pack(pady=5, anchor="w", padx=10)
+
         # Settings Container
         self.settings_frame = ctk.CTkFrame(self.root)
         self.settings_frame.pack(pady=10, padx=20, fill="both", expand=True)
@@ -133,16 +137,20 @@ class SettingsGUI:
 
     def start_app(self):
         # Save settings first
-        if not self.save_settings(show_message=False):
+        if not self.save_settings(show_message=True):
              return # Save failed
 
-        # Trigger callback (which should restart service or update config)
+        # Trigger callback (which should update config and scheduler)
         if self.root_callback:
-            self.root.withdraw() # Hide window
+            # Execute logic to reload config and update scheduler immediately
+            self.root_callback()
             
-            # Use root.after to run the callback logic slightly delayed to ensure UI is hidden first
-            # and to allow main loop to process pending events
-            self.root.after(100, self.root_callback)
+            # Force status update
+            self.update_status_label()
+            
+            # Close window after 2 seconds
+            # Use after_idle to ensure UI updates first if needed, but 2000ms is fine
+            self.root.after(2000, self.root.withdraw)
 
     def load_mode_settings(self):
         # Clear existing widgets in settings_frame

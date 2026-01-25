@@ -121,10 +121,17 @@ class Updater:
         
         try:
             self.logger.info(f"Downloading update from {url}...")
-            # Download
-            with urllib.request.urlopen(url, timeout=300) as response, open(temp_exe, 'wb') as out_file:
+            # Download with basic validation
+            req = urllib.request.Request(url, headers={'User-Agent': 'VitalityGuard-Updater'})
+            with urllib.request.urlopen(req, timeout=300) as response, open(temp_exe, 'wb') as out_file:
                 shutil.copyfileobj(response, out_file)
             
+            # Check file size (simple validation)
+            if os.path.getsize(temp_exe) < 1024 * 1024: # Less than 1MB is suspicious for this app
+                self.logger.warning(f"Downloaded file size too small ({os.path.getsize(temp_exe)} bytes). Aborting update.")
+                os.remove(temp_exe)
+                return
+
             self.logger.info("Download complete.")
 
             # Prepare for swap
@@ -145,7 +152,8 @@ class Updater:
             except OSError as e:
                 self.logger.error(f"Failed to rename current exe: {e}")
                 # Clean temp
-                os.remove(temp_exe)
+                if os.path.exists(temp_exe):
+                    os.remove(temp_exe)
                 return
 
             # Rename new -> current
@@ -159,7 +167,8 @@ class Updater:
                     os.rename(old_backup, current_exe)
                 except:
                     self.logger.critical("FATAL: Failed to rollback exe!")
-                os.remove(temp_exe)
+                if os.path.exists(temp_exe):
+                    os.remove(temp_exe)
 
         except Exception as e:
             self.logger.exception(f"Update failed during download/swap: {e}")

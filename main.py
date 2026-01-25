@@ -63,8 +63,10 @@ def _configure_logging():
     """
     is_frozen = bool(getattr(sys, "frozen", False))
     handlers = [logging.FileHandler(_get_log_file_path(), encoding="utf-8-sig")]
-    if not is_frozen:
-        handlers.append(logging.StreamHandler(sys.stdout))
+    
+    # Always log to stdout as well, even if frozen, so we can capture it in tests
+    handlers.append(logging.StreamHandler(sys.stdout))
+        
     logging.basicConfig(
         level=logging.INFO,
         format='[%(asctime)s] [%(levelname)s] %(message)s',
@@ -73,8 +75,12 @@ def _configure_logging():
     )
     if is_frozen:
         logger = logging.getLogger("VitalityGuard")
-        sys.stdout = _StreamToLogger(logger, logging.INFO)
-        sys.stderr = _StreamToLogger(logger, logging.ERROR)
+        # Do not overwrite stdout/stderr if we want to see print() output directly
+        # But we want to capture unhandled exceptions too.
+        # Let's just log to file AND stdout.
+        # sys.stdout = _StreamToLogger(logger, logging.INFO) 
+        # sys.stderr = _StreamToLogger(logger, logging.ERROR)
+        pass
 
 def _find_first_existing_dir(base_dirs, relative_candidates):
     """
@@ -186,23 +192,6 @@ def main():
 
     _configure_tk_for_frozen()
 
-    # 1. Single Instance Check
-    if not _acquire_single_instance_lock():
-        _show_message_box("VitalityGuard 已在运行（可能在托盘或后台）。")
-        sys.exit(0)
-    
-    def _excepthook(exc_type, exc, tb):
-        logging.exception("Unhandled exception", exc_info=(exc_type, exc, tb))
-        _show_message_box(f"程序异常退出：{exc}\n\n日志：{_get_log_file_path()}", "VitalityGuard")
-
-    sys.excepthook = _excepthook
-    try:
-        config = ConfigManager().config
-        set_windows_startup(bool(config.get("auto_start", False)))
-    except Exception as e:
-        logging.warning(f"Failed to apply Windows startup setting: {e}")
-    set_runtime_current_mode("default")
-
     parser = argparse.ArgumentParser(description="VitalityGuard - Prevent Sudden Death Assistant")
     parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual shutdown)")
     parser.add_argument("--test-mode", action="store_true", help="Run in test mode (short intervals)")
@@ -210,6 +199,16 @@ def main():
     parser.add_argument("--self-test", action="store_true", help="Run a short GUI self-test and exit")
     
     args = parser.parse_args()
+
+    # 1. Single Instance Check
+    # Skip single instance check if running self-test to allow testing even if main instance is stuck (though we kill it usually)
+    # But more importantly, if we run self-test, we might be running it WHILE another instance is running?
+    # No, test script kills it.
+    # However, if previous instance didn't release mutex quickly enough?
+    
+    if not args.self_test and not _acquire_single_instance_lock():
+        _show_message_box("VitalityGuard 已在运行（可能在托盘或后台）。")
+        sys.exit(0)
 
     print("Starting VitalityGuard (防沉迷助手)...")
     if args.dry_run:
@@ -222,8 +221,8 @@ def main():
         print("WARNING: SELF TEST ENABLED (auto actions)")
 
     # Start Updater
-    from utils.updater import Updater
     try:
+        from utils.updater import Updater
         updater = Updater(ConfigManager())
         updater.start_check_loop()
     except Exception as e:

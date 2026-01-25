@@ -92,7 +92,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='VitalityGuard',
+    name='VitalityGuard_v4',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
