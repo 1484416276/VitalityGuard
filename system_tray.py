@@ -15,6 +15,7 @@ class SystemTrayIcon:
         self.thread = None
         self.last_error = None
         self._running = False
+        self._ready = False
 
     def create_image(self):
         width = 64
@@ -62,14 +63,37 @@ class SystemTrayIcon:
                 menu=self.setup_menu()
             )
             self._running = True
+            self._ready = True
             self.icon.run()
         except Exception as e:
             self.last_error = str(e)
             logging.exception("System tray failed to start")
 
     def start_in_thread(self):
-        self.thread = threading.Thread(target=self.run, daemon=True)
-        self.thread.start()
+        if platform.system() == "Darwin":
+            try:
+                image = self.create_image()
+                self.icon = pystray.Icon(
+                    self.app_name,
+                    image,
+                    i18n.get("tray_tooltip"),
+                    menu=self.setup_menu()
+                )
+                self._running = True
+                self._ready = True
+                def _run_detached():
+                    try:
+                        self.icon.run_detached()
+                    except Exception as e:
+                        self.last_error = str(e)
+                        logging.exception("System tray run_detached failed")
+                _run_detached()
+            except Exception as e:
+                self.last_error = str(e)
+                logging.exception("System tray failed to start on macOS")
+        else:
+            self.thread = threading.Thread(target=self.run, daemon=True)
+            self.thread.start()
 
     def stop(self):
         self._running = False
