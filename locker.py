@@ -30,18 +30,16 @@ class ScreenLockerApp:
         self.dry_run = dry_run
         self.test_mode = test_mode
         self.config_manager = ConfigManager()
-        self.overlay_window = None # Black screen overlay
+        self.overlay_window = None
         
-        # 使用 SettingsGUI 作为主界面
-        # Pass quit_callback to handle full exit
-        # Pass scheduler to SettingsGUI for status display
         self.gui = SettingsGUI(root_callback=self.start_service, quit_callback=self.quit_app, scheduler=self.scheduler)
-        self.root = self.gui.root # 兼容引用
+        self.root = self.gui.root
 
-        # System Tray
         self.tray = SystemTrayIcon(on_quit=self.quit_app, on_show=self.show_settings)
-        self.check_loop_id = None # Track the after loop ID
+        self.check_loop_id = None
         self.root.protocol("WM_DELETE_WINDOW", self._on_root_close)
+        
+        self.root.bind("<<ShowSettings>>", lambda e: self._show_settings_safe())
 
     def start(self):
         """启动应用 (显示设置界面)"""
@@ -187,17 +185,20 @@ class ScreenLockerApp:
             print("Service configuration updated.")
 
     def show_settings(self):
-        """显示设置界面 (从托盘)"""
-        # CTk/Tkinter methods must be called from main thread usually.
-        # But tray runs in separate thread.
-        # We can use root.after or similar mechanism if needed, 
-        # but here we can try deiconify directly if thread safe enough, or queue it.
-        # Best practice: use root.after(0, callback)
-        self.root.after(0, self._show_settings_main_thread)
+        """显示设置界面 (从托盘) - 线程安全"""
+        try:
+            self.root.event_generate("<<ShowSettings>>")
+        except Exception as e:
+            logging.exception("Failed to generate show settings event")
 
-    def _show_settings_main_thread(self):
-        self.root.deiconify()
-        self.root.lift()
+    def _show_settings_safe(self):
+        """在主线程中安全地显示设置窗口"""
+        try:
+            self.root.deiconify()
+            self.root.lift()
+            self.root.focus_force()
+        except Exception as e:
+            logging.exception("Failed to show settings from tray")
 
     def quit_app(self):
         """完全退出"""
