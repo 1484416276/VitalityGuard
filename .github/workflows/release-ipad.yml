@@ -25,7 +25,12 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks
 
-      - name: Build IPA (No Signing)
+      - name: List project info
+        run: |
+          cd VitalityGuard
+          xcodebuild -list -project VitalityGuard.xcodeproj
+
+      - name: Build for iOS Simulator
         id: build
         run: |
           tag="${GITHUB_REF_NAME}"
@@ -37,35 +42,42 @@ jobs:
           xcodebuild -project VitalityGuard.xcodeproj \
             -scheme VitalityGuard \
             -configuration Release \
-            -destination 'generic/platform=iOS' \
-            -archivePath ../build/VitalityGuard.xcarchive \
-            archive \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            DEVELOPMENT_TEAM="" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
+            -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)' \
+            -derivedDataPath ../build \
+            build \
             2>&1 | tee build.log
           
           if [ ${PIPESTATUS[0]} -ne 0 ]; then
             echo "Build failed!"
-            tail -100 build.log
+            tail -200 build.log
             exit 1
           fi
           
-          mkdir -p ../build/Payload
-          if [ -d "../build/VitalityGuard.xcarchive/Products/Applications/VitalityGuard.app" ]; then
-            cp -r ../build/VitalityGuard.xcarchive/Products/Applications/VitalityGuard.app ../build/Payload/
-          else
-            echo "App not found in expected location"
-            find ../build -name "*.app" 2>/dev/null
+          echo "Build succeeded!"
+          find ../build -name "*.app" 2>/dev/null
+
+      - name: Create IPA from Simulator Build
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version=$(echo "$tag" | sed 's/-ipad$//')
+          
+          APP_PATH=$(find build -name "VitalityGuard.app" -type d | head -1)
+          
+          if [ -z "$APP_PATH" ]; then
+            echo "App not found!"
+            find build -type d -name "*.app" 2>/dev/null
             exit 1
           fi
+          
+          echo "Found app at: $APP_PATH"
+          
+          mkdir -p build/Payload
+          cp -r "$APP_PATH" build/Payload/
           
           ipa_name="VitalityGuard-${version}-ipad.ipa"
           ipa_path="dist/${ipa_name}"
-          mkdir -p ../dist
-          cd ../build
+          mkdir -p dist
+          cd build
           zip -r "../${ipa_path}" Payload
           
           hash=$(shasum -a 256 "../${ipa_path}" | cut -d' ' -f1)
@@ -78,7 +90,7 @@ jobs:
       - name: Verify artifacts
         run: |
           ls -la dist/
-          ls -la build/
+          file dist/*.ipa
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -94,24 +106,19 @@ jobs:
           name: VitalityGuard ${{ steps.build.outputs.version }} (iPad)
           tag_name: ${{ github.ref_name }}
           body: |
-            iPad/iOS build.
+            iPad/iOS build (Simulator version).
             
             SHA256: ${{ steps.build.outputs.sha256 }}
             
             ## Installation
+            This is a simulator build. For device installation, please use Xcode to build and deploy to your iPad.
+            
             ### Method 1: Xcode (Recommended)
-            1. Connect your iPad to Mac
-            2. Open Xcode → Window → Devices and Simulators
-            3. Select your iPad
-            4. Drag and drop the IPA file to install
-            
-            ### Method 2: Apple Configurator 2
-            1. Install Apple Configurator 2 from App Store
-            2. Connect your iPad
-            3. Drag and drop the IPA file to install
-            
-            ### Method 3: AltStore/Sideloadly
-            Use third-party tools like AltStore or Sideloadly to install.
+            1. Clone the repository
+            2. Open VitalityGuard.xcodeproj in Xcode
+            3. Connect your iPad
+            4. Select your iPad as the destination
+            5. Press Cmd+R to build and run
             
             ## Features
             - Work/Rest cycle timer
@@ -119,5 +126,3 @@ jobs:
             - Health tasks during rest (eye exercises, stretches)
             - Guided Access support for device lockdown
             - Multi-language support (Chinese/English)
-            
-            Note: This is an unsigned IPA. You may need to trust the developer in Settings > General > Device Management after installation.
