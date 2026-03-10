@@ -1,85 +1,98 @@
-# VitalityGuard for iPad
+# VitalityGuard for Android
 
-> 防过劳助手 iPad 版 - 保护你的健康，从合理休息开始
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-green.svg" alt="Platform">
+  <img src="https://img.shields.io/badge/Language-Kotlin-orange.svg" alt="Language">
+  <img src="https://img.shields.io/badge/Version-1.2.1-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/License-MIT-red.svg" alt="License">
+</p>
 
-## 简介
+**活力卫士 - 防过劳助手 Android版**
 
-VitalityGuard for iPad 是一款专为 iPad 设计的防过劳工具，帮助用户建立健康的工作/休息循环，预防因长时间使用设备而导致的健康问题。
+## 📱 功能特性
 
-## 功能特性
+- ⏰ **工作/休息周期管理** - 自定义工作和休息时长，强制提醒
+- 🌙 **夜间休息模式** - 设定夜间休息时段，强制休息
+- 🔒 **Root锁屏** - 利用Root权限实现强制锁屏（需Root）
+- ♿ **无障碍服务** - 拦截按键和手势，防止绕过锁屏
+- 🚨 **紧急解锁** - 5次返回键快速解锁（可配置）
+- 📞 **通讯穿透** - 锁屏时允许电话、微信、QQ等通讯应用
+- 🔔 **通知查看** - 锁屏时可下拉查看通知栏
+- ⏱️ **熄屏计时** - 使用WakeLock保持计时器在熄屏时继续运行
 
-### 🔔 工作/休息周期
-- 自定义工作时长（默认 60 分钟）
-- 自定义休息时长（默认 5 分钟）
-- 倒计时提醒（默认 10 秒）
+## 📥 安装
 
-### 🌙 夜间休息模式
-- 可设置夜间强制休息时段（默认 22:30 - 07:00）
-- 夜间自动进入休息状态
+1. 下载最新APK: [Releases](../../releases)
+2. 安装到Android设备（需要开启未知来源）
+3. 授予必要权限
+4. 开启无障碍服务
 
-### 💪 强制健康任务
-休息期间需要完成随机健康任务才能继续：
-- 👁️ 眼球转动 - 缓解眼部疲劳
-- 👁️ 远近交替 - 训练眼部肌肉
-- 👁️ 眨眼放松 - 滋润眼球
-- 🚶 颈部伸展 - 放松颈椎
-- 💨 深呼吸 - 调节身心
+## 🔧 系统要求
 
-### 🔒 引导式访问支持
-- 提供引导式访问开启指引
-- 配合系统功能实现设备锁定
+- Android 7.0 (API 24) 或更高版本
+- Root权限（可选，用于强制锁屏功能）
 
-### 🌐 多语言支持
-- 中文（简体）
-- English
+## 📖 使用说明
 
-## 安装方法
+1. **启动服务** - 点击开关启动监控
+2. **配置设置** - 设置工作时长、休息时长、夜间休息时段
+3. **保存设置** - 支持热更新，无需重启服务
+4. **紧急解锁** - 休息模式下连按5次返回键可解锁
 
-### 方式一：Xcode 编译
-1. 克隆仓库
+## 🔒 权限说明
+
+| 权限 | 用途 |
+|------|------|
+| 前台服务 | 保持后台运行 |
+| 通知 | 显示状态通知 |
+| 开机启动 | 开机自动启动 |
+| 唤醒锁 | 熄屏时保持计时 |
+| 悬浮窗 | 显示锁屏界面 |
+| 无障碍服务 | 拦截按键手势 |
+
+## 🏗️ 编译
+
 ```bash
-git clone https://github.com/your-username/VitalityGuard-iPad.git
+# 克隆仓库
+git clone https://github.com/你的用户名/VitalityGuard-Android.git
+
+# 进入项目目录
+cd VitalityGuard-Android
+
+# 编译Debug版本
+./gradlew assembleDebug
+
+# 编译Release版本
+./gradlew assembleRelease
 ```
 
-2. 用 Xcode 打开项目
-```bash
-open VitalityGuard-iPad/VitalityGuard.xcodeproj
-```
+## 📝 更新日志
 
-3. 连接 iPad，选择设备并运行
+### v1.2.1
+- 🔧 修复熄屏时计时器暂停的问题（添加WakeLock）
 
-### 方式二：直接安装 IPA
-从 [Releases](https://github.com/your-username/VitalityGuard-iPad/releases) 页面下载 IPA 文件，使用 Xcode 或其他工具安装到设备。
+### v1.2.0
+- ✨ 新增电话/微信/QQ等通讯软件穿透白名单
+- ✨ 允许锁屏时查看通知栏
 
-## 使用指南
+### v1.1.3
+- 🐛 修复服务状态显示"已暂停"的问题
 
-### 基本设置
-1. 打开 App，进入设置页面
-2. 配置工作/休息时长
-3. 可选：开启夜间休息模式
-4. 点击保存，开始工作周期
+### v1.1.2
+- 🐛 优化协程取消逻辑
 
-### 引导式访问（推荐）
-为获得最佳强制效果，建议开启引导式访问：
-1. 设置 → 辅助功能 → 引导式访问 → 开启
-2. 在 App 中连按三次侧边按钮
-3. 点击开始，设备将被锁定在此 App
+### v1.1.1
+- 🐛 修复夜间休息结束时不自动解锁的问题
 
-## 技术栈
+### v1.0.0
+- 🎉 首次发布
 
-- Swift 5.0
-- SwiftUI
-- UserNotifications
-- iOS 17.0+
-
-## 致谢
-
-本项目灵感来源于 [VitalityGuard](https://github.com/1484416276/VitalityGuard) Windows 版本。
-
-## 许可证
+## 📄 许可证
 
 MIT License
 
----
+## 🙏 致谢
 
-⚠️ **免责声明**：本应用仅供健康管理辅助使用，如有身体不适请及时就医。
+本项目是 [VitalityGuard](https://github.com/原作者/VitalityGuard) 的Android移植版本。
+
+原始Python/Windows版本请参考 VitalityGuard-master 目录。
