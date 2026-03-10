@@ -25,10 +25,19 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks
 
-      - name: List project info
+      - name: Debug - List directory structure
         run: |
-          cd VitalityGuard
-          xcodebuild -list -project VitalityGuard.xcodeproj
+          echo "=== Root directory ==="
+          ls -la
+          echo ""
+          echo "=== Looking for .xcodeproj ==="
+          find . -name "*.xcodeproj" -type d 2>/dev/null
+          echo ""
+          echo "=== Looking for .xcworkspace ==="
+          find . -name "*.xcworkspace" -type d 2>/dev/null
+          echo ""
+          echo "=== Looking for .swift files ==="
+          find . -name "*.swift" -type f 2>/dev/null | head -20
 
       - name: Build for iOS Simulator
         id: build
@@ -37,10 +46,25 @@ jobs:
           if [ -z "$tag" ] || [ "$tag" = "" ]; then tag="dev"; fi
           version=$(echo "$tag" | sed 's/-ipad$//')
           
-          cd VitalityGuard
+          PROJECT_PATH=$(find . -name "*.xcodeproj" -type d | head -1)
           
-          xcodebuild -project VitalityGuard.xcodeproj \
-            -scheme VitalityGuard \
+          if [ -z "$PROJECT_PATH" ]; then
+            echo "ERROR: No .xcodeproj found!"
+            exit 1
+          fi
+          
+          echo "Found project at: $PROJECT_PATH"
+          
+          PROJECT_DIR=$(dirname "$PROJECT_PATH")
+          PROJECT_NAME=$(basename "$PROJECT_PATH" .xcodeproj)
+          
+          echo "Project directory: $PROJECT_DIR"
+          echo "Project name: $PROJECT_NAME"
+          
+          cd "$PROJECT_DIR"
+          
+          xcodebuild -project "$PROJECT_NAME.xcodeproj" \
+            -scheme "$PROJECT_NAME" \
             -configuration Release \
             -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)' \
             -derivedDataPath ../build \
@@ -61,7 +85,7 @@ jobs:
           tag="${GITHUB_REF_NAME}"
           version=$(echo "$tag" | sed 's/-ipad$//')
           
-          APP_PATH=$(find build -name "VitalityGuard.app" -type d | head -1)
+          APP_PATH=$(find build -name "*.app" -type d | head -1)
           
           if [ -z "$APP_PATH" ]; then
             echo "App not found!"
