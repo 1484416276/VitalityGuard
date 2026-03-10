@@ -33,25 +33,29 @@ jobs:
         run: |
           python -m PyInstaller --noconfirm --clean VitalityGuardMacOS.spec
 
-      - name: Prepare artifacts
-        id: prep
+      - name: Create DMG
+        id: dmg
         run: |
           tag="${GITHUB_REF_NAME}"
           if [ -z "$tag" ] || [ "$tag" = "" ]; then tag="dev"; fi
           version=$(echo "$tag" | sed 's/-macos$//')
-          outName="VitalityGuard-${version}-macos-arm64"
-          src="dist/VitalityGuard"
-          if [ ! -f "$src" ]; then
-            echo "Missing build output: $src"
+          
+          app_path="dist/VitalityGuard.app"
+          if [ ! -d "$app_path" ]; then
+            echo "Missing build output: $app_path"
             ls -la dist/ || true
             exit 1
           fi
-          dstRel="dist/${outName}"
-          mv "$src" "$dstRel"
-          chmod +x "$dstRel"
-          hash=$(shasum -a 256 "$dstRel" | cut -d' ' -f1)
-          echo "asset_path=$dstRel" >> $GITHUB_OUTPUT
-          echo "asset_name=$outName" >> $GITHUB_OUTPUT
+          
+          dmg_name="VitalityGuard-${version}-macos-arm64.dmg"
+          dmg_path="dist/${dmg_name}"
+          
+          hdiutil create -volname "VitalityGuard" -srcfolder "$app_path" -ov -format UDZO "$dmg_path"
+          
+          hash=$(shasum -a 256 "$dmg_path" | cut -d' ' -f1)
+          
+          echo "dmg_path=$dmg_path" >> $GITHUB_OUTPUT
+          echo "dmg_name=$dmg_name" >> $GITHUB_OUTPUT
           echo "sha256=$hash" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
 
@@ -62,24 +66,24 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.prep.outputs.asset_name }}
-          path: ${{ steps.prep.outputs.asset_path }}
+          name: ${{ steps.dmg.outputs.dmg_name }}
+          path: ${{ steps.dmg.outputs.dmg_path }}
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.prep.outputs.asset_path }}
-          name: VitalityGuard ${{ steps.prep.outputs.version }} (macOS)
+          files: ${{ steps.dmg.outputs.dmg_path }}
+          name: VitalityGuard ${{ steps.dmg.outputs.version }} (macOS)
           tag_name: ${{ github.ref_name }}
           body: |
             macOS ARM64 (Apple Silicon) build.
             
-            SHA256: ${{ steps.prep.outputs.sha256 }}
+            SHA256: ${{ steps.dmg.outputs.sha256 }}
             
             ## Installation
-            1. Download the binary file
-            2. Open Terminal and run: `chmod +x VitalityGuard-*-macos-arm64`
-            3. Run: `./VitalityGuard-*-macos-arm64`
+            1. Download the DMG file
+            2. Open the DMG and drag VitalityGuard to Applications folder
+            3. Run VitalityGuard from Applications
             
             Note: On first run, you may need to allow the app in "System Preferences > Security & Privacy".
