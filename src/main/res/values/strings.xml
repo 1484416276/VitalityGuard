@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">活力卫士</string>
+    <string name="accessibility_service_description">活力卫士无障碍服务用于在休息时段限制手机操作，防止您绕过锁屏。需要此权限才能拦截系统按键和手势操作。</string>
+</resources>
