@@ -1,0 +1,83 @@
+name: release-macos
+
+on:
+  push:
+    tags:
+      - "v*-mac"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system dependencies
+        run: |
+          brew install python-tk@3.12 || true
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+
+      - name: Build macOS app
+        run: |
+          python -m PyInstaller --noconfirm --clean VitalityGuardMacOS.spec
+
+      - name: Prepare artifacts
+        id: prep
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [ -z "$tag" ] || [ "$tag" = "" ]; then tag="dev"; fi
+          outName="VitalityGuard-${tag}-macos-arm64"
+          src="dist/VitalityGuard"
+          if [ ! -f "$src" ]; then
+            echo "Missing build output: $src"
+            ls -la dist/ || true
+            exit 1
+          fi
+          dstRel="dist/${outName}"
+          mv "$src" "$dstRel"
+          chmod +x "$dstRel"
+          hash=$(shasum -a 256 "$dstRel" | cut -d' ' -f1)
+          echo "asset_path=$dstRel" >> $GITHUB_OUTPUT
+          echo "asset_name=$outName" >> $GITHUB_OUTPUT
+          echo "sha256=$hash" >> $GITHUB_OUTPUT
+
+      - name: Verify artifacts
+        run: |
+          ls -la dist/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prep.outputs.asset_name }}
+          path: ${{ steps.prep.outputs.asset_path }}
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.prep.outputs.asset_path }}
+          name: VitalityGuard ${{ github.ref_name }} (macOS)
+          tag_name: ${{ github.ref_name }}
+          body: |
+            macOS ARM64 (Apple Silicon) build.
+            
+            SHA256: ${{ steps.prep.outputs.sha256 }}
+            
+            ## 使用方法
+            1. 下载文件
+            2. 在终端中运行: `chmod +x VitalityGuard-*-macos-arm64`
+            3. 运行: `./VitalityGuard-*-macos-arm64`
+            
+            首次运行可能需要在"系统偏好设置 > 安全性与隐私"中允许运行。

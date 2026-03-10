@@ -1,10 +1,14 @@
 import json
 import os
 import logging
+import platform
 
 def get_config_dir():
-    base = os.getenv("APPDATA") or os.path.expanduser("~")
-    return os.path.join(base, "VitalityGuard")
+    if platform.system() == "Darwin":
+        return os.path.join(os.path.expanduser("~"), "Library", "Application Support", "VitalityGuard")
+    else:
+        base = os.getenv("APPDATA") or os.path.expanduser("~")
+        return os.path.join(base, "VitalityGuard")
 
 def get_config_file_path():
     return os.path.join(get_config_dir(), "config.json")

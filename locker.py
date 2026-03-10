@@ -3,6 +3,7 @@ import tkinter.messagebox as messagebox
 import sys
 import time
 import logging
+import platform
 from scheduler_logic import SchedulerLogic
 from utils.system_ops import save_current_work, force_hibernate
 from utils.sound_player import SoundPlayer
@@ -12,6 +13,12 @@ from config_manager import ConfigManager
 from i18n import i18n
 
 from system_tray import SystemTrayIcon
+
+def get_system_font():
+    """获取系统默认字体"""
+    if platform.system() == "Darwin":
+        return "Helvetica"
+    return "Microsoft YaHei"
 
 class ScreenLockerApp:
     """
@@ -308,21 +315,18 @@ class ScreenLockerApp:
         # Hint label (Subtle but visible)
         # Changed color to #808080 for better visibility
         if allow_unlock:
-            hint_label = tk.Label(self.overlay_window, text=i18n.get("press_esc_hint"), font=("Microsoft YaHei", 12), fg="#808080", bg="black")
+            hint_label = tk.Label(self.overlay_window, text=i18n.get("press_esc_hint"), font=(get_system_font(), 12), fg="#808080", bg="black")
             hint_label.pack(side="bottom", pady=20)
             
-            # Add visual feedback label for ESC press
-            self.esc_feedback_label = tk.Label(self.overlay_window, text="", font=("Microsoft YaHei", 10), fg="#444444", bg="black")
+            self.esc_feedback_label = tk.Label(self.overlay_window, text="", font=(get_system_font(), 10), fg="#444444", bg="black")
             self.esc_feedback_label.pack(side="bottom", pady=5)
 
-        # Cancel button if allowed
         if allow_unlock:
-            btn_exit = tk.Button(self.overlay_window, text=i18n.get("emergency_unlock"), font=("Microsoft YaHei", 12), command=self._close_black_screen)
+            btn_exit = tk.Button(self.overlay_window, text=i18n.get("emergency_unlock"), font=(get_system_font(), 12), command=self._close_black_screen)
             btn_exit.pack(side="bottom", pady=20)
 
-        # Label showing remaining time (Packed last to fill remaining space)
         text = i18n.get("rest_screen_text", time=f"{int(duration)//60:02d}:00")
-        label = tk.Label(self.overlay_window, text=text, font=("Microsoft YaHei", 48), fg="white", bg="black")
+        label = tk.Label(self.overlay_window, text=text, font=(get_system_font(), 48), fg="white", bg="black")
         label.pack(expand=True)
 
         # Update loop for timer
@@ -414,11 +418,10 @@ class ScreenLockerApp:
         # Use bind_all to ensure we catch it even if focus is slightly off
         self.overlay_window.bind_all('<Escape>', on_esc)
         
-        # Hint label (Subtle but visible)
-        hint_label = tk.Label(self.overlay_window, text=i18n.get("press_esc_hint"), font=("Microsoft YaHei", 12), fg="#808080", bg="black")
+        hint_label = tk.Label(self.overlay_window, text=i18n.get("press_esc_hint"), font=(get_system_font(), 12), fg="#808080", bg="black")
         hint_label.pack(side="bottom", pady=20)
         
-        label = tk.Label(self.overlay_window, text=i18n.get("curfew_text"), font=("Microsoft YaHei", 48), fg="white", bg="black")
+        label = tk.Label(self.overlay_window, text=i18n.get("curfew_text"), font=(get_system_font(), 48), fg="white", bg="black")
         label.pack(expand=True)
 
         def check_curfew():

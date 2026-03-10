@@ -2,21 +2,21 @@ import pystray
 from PIL import Image, ImageDraw
 import threading
 import sys
+import platform
 from i18n import i18n
 import logging
 
 class SystemTrayIcon:
     def __init__(self, app_name="VitalityGuard", on_quit=None, on_show=None):
-        self.app_name = app_name # This is just internal ID now
+        self.app_name = app_name
         self.on_quit = on_quit
         self.on_show = on_show
         self.icon = None
         self.thread = None
         self.last_error = None
+        self._running = False
 
     def create_image(self):
-        # Create a simple icon image programmatically
-        # In a real app, load a .ico or .png file
         width = 64
         height = 64
         color1 = (0, 100, 255)
@@ -40,10 +40,12 @@ class SystemTrayIcon:
             self.on_show()
 
     def action_quit(self, icon, item):
-        try:
-            icon.stop()
-        except BaseException:
-            pass
+        self._running = False
+        if self.icon:
+            try:
+                self.icon.stop()
+            except BaseException:
+                pass
         if self.on_quit:
             try:
                 self.on_quit()
@@ -59,16 +61,37 @@ class SystemTrayIcon:
                 i18n.get("tray_tooltip"),
                 menu=self.setup_menu()
             )
-            self.icon.run()
+            self._running = True
+            
+            if platform.system() == "Darwin":
+                self.icon.run_detached()
+            else:
+                self.icon.run()
         except Exception as e:
             self.last_error = str(e)
             logging.exception("System tray failed to start")
 
     def start_in_thread(self):
-        self.thread = threading.Thread(target=self.run, daemon=True)
-        self.thread.start()
+        if platform.system() == "Darwin":
+            try:
+                image = self.create_image()
+                self.icon = pystray.Icon(
+                    self.app_name,
+                    image,
+                    i18n.get("tray_tooltip"),
+                    menu=self.setup_menu()
+                )
+                self._running = True
+                self.icon.run_detached()
+            except Exception as e:
+                self.last_error = str(e)
+                logging.exception("System tray failed to start")
+        else:
+            self.thread = threading.Thread(target=self.run, daemon=True)
+            self.thread.start()
 
     def stop(self):
+        self._running = False
         if self.icon:
             try:
                 self.icon.stop()
@@ -77,10 +100,12 @@ class SystemTrayIcon:
 
     def show_notification(self, title, message):
         if self.icon:
-            self.icon.notify(message, title)
+            try:
+                self.icon.notify(message, title)
+            except Exception:
+                pass
 
 if __name__ == "__main__":
-    # Test
     def quit_app():
         print("Quitting...")
         sys.exit()

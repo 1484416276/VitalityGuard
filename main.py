@@ -1,33 +1,49 @@
 import argparse
 import sys
 import logging
-import ctypes
 import os
+import platform
+import fcntl
 from config_manager import ConfigManager, set_runtime_current_mode
-from utils.system_ops import set_windows_startup
+from utils.system_ops import set_macos_startup
 
-_SINGLE_INSTANCE_MUTEX = None
+_SINGLE_INSTANCE_LOCK_FILE = None
 
 def _acquire_single_instance_lock():
     """
-    尝试获取单实例互斥锁；获取失败表示已有实例在运行。
+    尝试获取单实例文件锁；获取失败表示已有实例在运行。
+    使用跨平台的文件锁机制。
     """
-    global _SINGLE_INSTANCE_MUTEX
+    global _SINGLE_INSTANCE_LOCK_FILE
+    lock_dir = os.path.join(os.path.expanduser("~"), "Library", "Caches", "VitalityGuard")
     try:
-        handle = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\VitalityGuard")
-        if not handle:
-            return True
-        _SINGLE_INSTANCE_MUTEX = handle
-        return ctypes.windll.kernel32.GetLastError() != 183
+        os.makedirs(lock_dir, exist_ok=True)
+    except Exception:
+        lock_dir = os.path.expanduser("~")
+    
+    lock_file_path = os.path.join(lock_dir, "vitalityguard.lock")
+    
+    try:
+        _SINGLE_INSTANCE_LOCK_FILE = open(lock_file_path, 'w')
+        fcntl.flock(_SINGLE_INSTANCE_LOCK_FILE.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except (IOError, OSError):
+        if _SINGLE_INSTANCE_LOCK_FILE:
+            _SINGLE_INSTANCE_LOCK_FILE.close()
+            _SINGLE_INSTANCE_LOCK_FILE = None
+        return False
     except Exception:
         return True
 
 def _get_log_file_path():
     """
-    获取日志文件路径（优先使用 APPDATA，其次回落到当前工作目录）。
+    获取日志文件路径（Mac 使用 ~/Library/Logs）。
     """
-    base = os.getenv("APPDATA") or os.getcwd()
-    log_dir = os.path.join(base, "VitalityGuard", "logs")
+    if platform.system() == "Darwin":
+        log_dir = os.path.join(os.path.expanduser("~"), "Library", "Logs", "VitalityGuard")
+    else:
+        base = os.getenv("APPDATA") or os.getcwd()
+        log_dir = os.path.join(base, "VitalityGuard", "logs")
     try:
         os.makedirs(log_dir, exist_ok=True)
     except Exception:
@@ -64,7 +80,6 @@ def _configure_logging():
     is_frozen = bool(getattr(sys, "frozen", False))
     handlers = [logging.FileHandler(_get_log_file_path(), encoding="utf-8-sig")]
     
-    # Always log to stdout as well, even if frozen, so we can capture it in tests
     handlers.append(logging.StreamHandler(sys.stdout))
         
     logging.basicConfig(
@@ -73,14 +88,6 @@ def _configure_logging():
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=handlers,
     )
-    if is_frozen:
-        logger = logging.getLogger("VitalityGuard")
-        # Do not overwrite stdout/stderr if we want to see print() output directly
-        # But we want to capture unhandled exceptions too.
-        # Let's just log to file AND stdout.
-        # sys.stdout = _StreamToLogger(logger, logging.INFO) 
-        # sys.stderr = _StreamToLogger(logger, logging.ERROR)
-        pass
 
 def _find_first_existing_dir(base_dirs, relative_candidates):
     """
@@ -154,31 +161,18 @@ def _configure_tk_for_frozen():
     path_parts = [p for p in [internal_dir, meipass, exe_dir] if p]
     os.environ["PATH"] = os.pathsep.join(path_parts + [os.environ.get("PATH", "")])
 
-    for d in path_parts:
-        try:
-            os.add_dll_directory(d)
-        except Exception:
-            pass
-
-    for candidate_base in path_parts:
-        tcl_dll = os.path.join(candidate_base, "tcl86t.dll")
-        tk_dll = os.path.join(candidate_base, "tk86t.dll")
-        try:
-            if os.path.isfile(tcl_dll):
-                ctypes.WinDLL(tcl_dll)
-            if os.path.isfile(tk_dll):
-                ctypes.WinDLL(tk_dll)
-        except Exception:
-            pass
-
 def _show_message_box(text, title="VitalityGuard"):
     """
-    在 Windows 上显示简单的 MessageBox（异常时忽略）。
+    显示简单的消息框（跨平台）。
     """
     try:
-        ctypes.windll.user32.MessageBoxW(None, text, title, 0x40)
+        if platform.system() == "Darwin":
+            os.system(f"""osascript -e 'display dialog "{text}" with title "{title}" buttons "OK"'""")
+        else:
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(None, text, title, 0x40)
     except Exception:
-        pass
+        print(f"[{title}] {text}")
 
 def main():
     """
@@ -189,6 +183,7 @@ def main():
     logging.info("Log file: %s", _get_log_file_path())
     logging.info("Frozen: %s", bool(getattr(sys, "frozen", False)))
     logging.info("Python: %s", sys.version.replace("\n", " "))
+    logging.info("Platform: %s", platform.system())
 
     _configure_tk_for_frozen()
 
@@ -200,12 +195,6 @@ def main():
     
     args = parser.parse_args()
 
-    # 1. Single Instance Check
-    # Skip single instance check if running self-test to allow testing even if main instance is stuck (though we kill it usually)
-    # But more importantly, if we run self-test, we might be running it WHILE another instance is running?
-    # No, test script kills it.
-    # However, if previous instance didn't release mutex quickly enough?
-    
     if not args.self_test and not _acquire_single_instance_lock():
         _show_message_box("VitalityGuard 已在运行（可能在托盘或后台）。")
         sys.exit(0)
@@ -220,7 +209,6 @@ def main():
     if args.self_test:
         print("WARNING: SELF TEST ENABLED (auto actions)")
 
-    # Start Updater
     try:
         from utils.updater import Updater
         updater = Updater(ConfigManager())

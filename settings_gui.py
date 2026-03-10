@@ -2,9 +2,10 @@ import customtkinter as ctk
 from config_manager import ConfigManager, set_runtime_current_mode
 import tkinter.messagebox
 from i18n import i18n
-from utils.system_ops import set_windows_startup
+from utils.system_ops import set_macos_startup, set_windows_startup, is_macos_startup_enabled, is_windows_startup_enabled
 import time
 from datetime import datetime
+import platform
 
 class SettingsGUI:
     def __init__(self, root_callback=None, quit_callback=None, scheduler=None):
@@ -12,11 +13,10 @@ class SettingsGUI:
         self.config = self.config_manager.config
         self.scheduler = scheduler
         
-        # Init Language
         self.lang = self.config.get("language", "zh_CN")
         i18n.set_lang(self.lang)
         
-        self.root_callback = root_callback # Callback to restart app or apply settings
+        self.root_callback = root_callback
         self.quit_callback = quit_callback
 
         ctk.set_appearance_mode("Dark")
@@ -26,18 +26,14 @@ class SettingsGUI:
         self.root.title(i18n.get("app_title"))
         self.root.geometry("600x700")
         
-        # Intercept close button
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.create_widgets()
     
     def on_closing(self):
-        # User request: "点击关闭就是最小化到托盘，不需要再提醒"
-        # Just withdraw (hide) the window
         self.root.withdraw()
 
     def create_widgets(self):
-        # Language Selection
         self.lang_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         self.lang_frame.pack(pady=5, padx=20, fill="x", anchor="ne")
         
@@ -54,34 +50,31 @@ class SettingsGUI:
         )
         self.option_lang.pack(side="left")
 
-        # Title
         self.label_title = ctk.CTkLabel(self.root, text=i18n.get("settings_title"), font=("Roboto", 24))
         self.label_title.pack(pady=10)
 
-        # Global Options
         self.global_frame = ctk.CTkFrame(self.root)
         self.global_frame.pack(pady=5, padx=20, fill="x")
 
         self.var_auto_start = ctk.BooleanVar(value=bool(self.config.get("auto_start", False)))
-        self.chk_auto_start = ctk.CTkCheckBox(self.global_frame, text=i18n.get("auto_start"), variable=self.var_auto_start)
+        auto_start_text = i18n.get("auto_start")
+        if platform.system() == "Darwin":
+            auto_start_text = "开机自启动 (Login Items)"
+        self.chk_auto_start = ctk.CTkCheckBox(self.global_frame, text=auto_start_text, variable=self.var_auto_start)
         self.chk_auto_start.pack(pady=5, anchor="w", padx=10)
 
         self.var_auto_update = ctk.BooleanVar(value=bool(self.config.get("auto_update", True)))
         self.chk_auto_update = ctk.CTkCheckBox(self.global_frame, text=i18n.get("auto_update"), variable=self.var_auto_update)
         self.chk_auto_update.pack(pady=5, anchor="w", padx=10)
 
-        # Settings Container
         self.settings_frame = ctk.CTkFrame(self.root)
         self.settings_frame.pack(pady=10, padx=20, fill="both", expand=True)
 
-        # We will populate settings_frame dynamically
         self.load_mode_settings()
 
-        # Save and Restart Button
         self.btn_start = ctk.CTkButton(self.root, text=i18n.get("save_restart"), command=self.start_app, fg_color="green", height=40, font=("Roboto", 16))
         self.btn_start.pack(pady=20, fill="x", padx=40)
 
-        # Status Label (Next Black Screen Time)
         self.label_status = ctk.CTkLabel(self.root, text="Next Rest: --:--", font=("Roboto", 12), text_color="gray")
         self.label_status.pack(side="bottom", pady=10)
         
@@ -91,14 +84,12 @@ class SettingsGUI:
         if self.scheduler:
             next_ts = self.scheduler.get_next_transition_time()
             if next_ts > 0:
-                # Calculate relative time
                 now = time.time()
                 diff = next_ts - now
                 
                 if diff < 0:
                     status_text = "Status: Transitioning..."
                 else:
-                    # Format absolute time
                     dt = datetime.fromtimestamp(next_ts)
                     time_str = dt.strftime("%H:%M:%S")
                     
@@ -109,7 +100,6 @@ class SettingsGUI:
                 
                 self.label_status.configure(text=status_text)
         
-        # Schedule next update
         if not self.root.winfo_exists():
             return
         try:
@@ -121,14 +111,11 @@ class SettingsGUI:
         if lang != self.lang:
             self.lang = lang
             i18n.set_lang(lang)
-            # Save immediately
             self.config["language"] = lang
             self.config_manager.save_config(self.config)
-            # Reload GUI
             self.reload_gui()
 
     def reload_gui(self):
-        # Destroy all widgets and recreate
         for widget in self.root.winfo_children():
             widget.destroy()
         
@@ -136,36 +123,22 @@ class SettingsGUI:
         self.create_widgets()
 
     def start_app(self):
-        # Save settings first
         if not self.save_settings(show_message=True):
-             return # Save failed
+             return
 
-        # Trigger callback (which should update config and scheduler)
         if self.root_callback:
-            # Execute logic to reload config and update scheduler immediately
             self.root_callback()
-            
-            # Force status update
             self.update_status_label()
-            
-            # Close window after 2 seconds
-            # Use after_idle to ensure UI updates first if needed, but 2000ms is fine
             self.root.after(2000, self.root.withdraw)
 
     def load_mode_settings(self):
-        # Clear existing widgets in settings_frame
         for widget in self.settings_frame.winfo_children():
             widget.destroy()
 
         mode_config = self.config["modes"]["default"]
 
-        # Work Duration
         self.add_entry(i18n.get("work_duration"), "work_duration_minutes", mode_config)
-        
-        # Rest Duration
         self.add_entry(i18n.get("rest_duration"), "rest_duration_minutes", mode_config)
-
-        # Countdown
         self.add_entry(i18n.get("countdown"), "countdown_seconds", mode_config)
 
         self.var_black_screen_unlock = ctk.BooleanVar(value=bool(mode_config.get("allow_black_screen_unlock", True)))
@@ -176,7 +149,6 @@ class SettingsGUI:
         )
         self.chk_black_screen_unlock.pack(pady=5, anchor="w", padx=20)
 
-        # Night Sleep
         self.var_night = ctk.BooleanVar(value=mode_config.get("night_sleep_enabled", True))
         self.chk_night = ctk.CTkCheckBox(self.settings_frame, text=i18n.get("night_sleep_enabled"), variable=self.var_night, command=self.toggle_night_settings)
         self.chk_night.pack(pady=10, anchor="w", padx=20)
@@ -200,7 +172,6 @@ class SettingsGUI:
         entry.insert(0, str(config.get(key, "")))
         entry.pack(side="right", expand=True, fill="x")
         
-        # Store reference to retrieve value later
         setattr(self, f"entry_{key}", entry)
 
     def add_entry_to_frame(self, parent, label_text, key, config):
@@ -214,7 +185,6 @@ class SettingsGUI:
         entry.insert(0, str(config.get(key, "")))
         entry.pack(side="right", expand=True, fill="x")
         
-        # Store reference
         setattr(self, f"entry_{key}", entry)
         return entry
 
@@ -245,13 +215,15 @@ class SettingsGUI:
         current_auto_start = bool(self.config.get("auto_start", False))
         if desired_auto_start != current_auto_start:
             try:
-                set_windows_startup(desired_auto_start)
+                if platform.system() == "Darwin":
+                    set_macos_startup(desired_auto_start)
+                else:
+                    set_windows_startup(desired_auto_start)
                 self.config["auto_start"] = desired_auto_start
             except Exception as e:
                 tkinter.messagebox.showerror("Error", i18n.get("auto_start_failed", error=str(e)))
                 self.var_auto_start.set(current_auto_start)
 
-        # Update global config
         self.config["current_mode"] = "default"
         self.config["auto_update"] = self.var_auto_update.get()
         self.config_manager.save_config(self.config)
