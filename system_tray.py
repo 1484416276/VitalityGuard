@@ -3,8 +3,8 @@ from PIL import Image, ImageDraw
 import threading
 import sys
 import platform
-from i18n import i18n
 import logging
+from i18n import i18n
 
 class SystemTrayIcon:
     def __init__(self, app_name="VitalityGuard", on_quit=None, on_show=None):
@@ -62,33 +62,14 @@ class SystemTrayIcon:
                 menu=self.setup_menu()
             )
             self._running = True
-            
-            if platform.system() == "Darwin":
-                self.icon.run_detached()
-            else:
-                self.icon.run()
+            self.icon.run()
         except Exception as e:
             self.last_error = str(e)
             logging.exception("System tray failed to start")
 
     def start_in_thread(self):
-        if platform.system() == "Darwin":
-            try:
-                image = self.create_image()
-                self.icon = pystray.Icon(
-                    self.app_name,
-                    image,
-                    i18n.get("tray_tooltip"),
-                    menu=self.setup_menu()
-                )
-                self._running = True
-                self.icon.run_detached()
-            except Exception as e:
-                self.last_error = str(e)
-                logging.exception("System tray failed to start")
-        else:
-            self.thread = threading.Thread(target=self.run, daemon=True)
-            self.thread.start()
+        self.thread = threading.Thread(target=self.run, daemon=True)
+        self.thread.start()
 
     def stop(self):
         self._running = False
