@@ -3,7 +3,7 @@ name: release-macos
 on:
   push:
     tags:
-      - "v*-mac"
+      - "v*-macos"
   workflow_dispatch:
 
 permissions:
@@ -38,7 +38,8 @@ jobs:
         run: |
           tag="${GITHUB_REF_NAME}"
           if [ -z "$tag" ] || [ "$tag" = "" ]; then tag="dev"; fi
-          outName="VitalityGuard-${tag}-macos-arm64"
+          version=$(echo "$tag" | sed 's/-macos$//')
+          outName="VitalityGuard-${version}-macos-arm64"
           src="dist/VitalityGuard"
           if [ ! -f "$src" ]; then
             echo "Missing build output: $src"
@@ -52,6 +53,7 @@ jobs:
           echo "asset_path=$dstRel" >> $GITHUB_OUTPUT
           echo "asset_name=$outName" >> $GITHUB_OUTPUT
           echo "sha256=$hash" >> $GITHUB_OUTPUT
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Verify artifacts
         run: |
@@ -68,16 +70,16 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.prep.outputs.asset_path }}
-          name: VitalityGuard ${{ github.ref_name }} (macOS)
+          name: VitalityGuard ${{ steps.prep.outputs.version }} (macOS)
           tag_name: ${{ github.ref_name }}
           body: |
             macOS ARM64 (Apple Silicon) build.
             
             SHA256: ${{ steps.prep.outputs.sha256 }}
             
-            ## 使用方法
-            1. 下载文件
-            2. 在终端中运行: `chmod +x VitalityGuard-*-macos-arm64`
-            3. 运行: `./VitalityGuard-*-macos-arm64`
+            ## Installation
+            1. Download the binary file
+            2. Open Terminal and run: `chmod +x VitalityGuard-*-macos-arm64`
+            3. Run: `./VitalityGuard-*-macos-arm64`
             
-            首次运行可能需要在"系统偏好设置 > 安全性与隐私"中允许运行。
+            Note: On first run, you may need to allow the app in "System Preferences > Security & Privacy".
