@@ -1,0 +1,100 @@
+name: release-ipad
+
+on:
+  push:
+    tags:
+      - "v*-ipad"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.2.app
+          xcodebuild -version
+
+      - name: Build IPA
+        id: build
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [ -z "$tag" ] || [ "$tag" = "" ]; then tag="dev"; fi
+          version=$(echo "$tag" | sed 's/-ipad$//')
+          
+          xcodebuild -project VitalityGuard.xcodeproj \
+            -scheme VitalityGuard \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/VitalityGuard.xcarchive \
+            archive \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+          
+          mkdir -p build/Payload
+          cp -r build/VitalityGuard.xcarchive/Products/Applications/VitalityGuard.app build/Payload/
+          
+          ipa_name="VitalityGuard-${version}-ipad.ipa"
+          ipa_path="dist/${ipa_name}"
+          mkdir -p dist
+          cd build
+          zip -r "../${ipa_path}" Payload
+          
+          hash=$(shasum -a 256 "../${ipa_path}" | cut -d' ' -f1)
+          
+          echo "ipa_path=${ipa_path}" >> $GITHUB_OUTPUT
+          echo "ipa_name=${ipa_name}" >> $GITHUB_OUTPUT
+          echo "sha256=${hash}" >> $GITHUB_OUTPUT
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
+      - name: Verify artifacts
+        run: |
+          ls -la dist/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.ipa_name }}
+          path: ${{ steps.build.outputs.ipa_path }}
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.build.outputs.ipa_path }}
+          name: VitalityGuard ${{ steps.build.outputs.version }} (iPad)
+          tag_name: ${{ github.ref_name }}
+          body: |
+            iPad/iOS build.
+            
+            SHA256: ${{ steps.build.outputs.sha256 }}
+            
+            ## Installation
+            ### Method 1: Xcode (Recommended)
+            1. Connect your iPad to Mac
+            2. Open Xcode → Window → Devices and Simulators
+            3. Select your iPad
+            4. Drag and drop the IPA file to install
+            
+            ### Method 2: Apple Configurator 2
+            1. Install Apple Configurator 2 from App Store
+            2. Connect your iPad
+            3. Drag and drop the IPA file to install
+            
+            ### Method 3: AltStore/Sideloadly
+            Use third-party tools like AltStore or Sideloadly to install.
+            
+            ## Features
+            - Work/Rest cycle timer
+            - Night rest mode
+            - Health tasks during rest (eye exercises, stretches)
+            - Guided Access support for device lockdown
+            - Multi-language support (Chinese/English)
+            
+            Note: This is an unsigned IPA. You may need to trust the developer in Settings > General > Device Management after installation.
